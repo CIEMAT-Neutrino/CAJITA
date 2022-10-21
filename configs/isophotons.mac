@@ -1,0 +1,37 @@
+#initialise the geometry and the physics tables
+/run/initialize
+/control/verbose 0
+/tracking/verbose 0
+/event/verbose 0
+
+#set the beam parameters
+/gps/verbose 2
+/gps/particle opticalphoton
+/gps/ene/type Mono
+
+# --> Energy equiv. to 128nm
+ /gps/ene/mono 9.7 eV
+
+# --> Energy equiv. to 413nm
+# /gps/ene/mono 3. eV
+
+# /gps/polarization 1 1 1
+
+# --> Extense Source
+/gps/pos/type Plane
+/gps/pos/shape Rectangle
+/gps/pos/halfx 0.1 m
+/gps/pos/halfy 0.1 m
+
+/gps/pos/centre 0 0 0.5 m
+
+#/gps/pos/confine DetectorVolume
+#/gps/pos/halfx 1 mm
+#/gps/pos/halfy 1 mm 
+
+#/gps/direction 0 0 -1
+/gps/ang/type iso
+/gps/number 1
+
+#run the code
+/run/beamOn 100

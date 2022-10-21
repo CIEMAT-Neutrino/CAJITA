@@ -1,0 +1,65 @@
+#initialise the geometry and the physics tables
+/run/initialize
+/control/verbose 0
+/tracking/verbose 0
+/event/verbose 0
+
+#set the beam parameters
+/gps/verbose 0
+/gps/particle opticalphoton
+/gps/ene/type User
+
+# TPB Energy Spectrum
+# TpbEmmisionEnergies: [0.05,1.0,1.5, 2.25, 2.481, 2.819, 2.952,2.988,3.024, 3.1, 3.14,3.1807, 3.54, 5.5, 50.39]
+# TpbEmmisionSpectrum: [0.0, 0.0, 0.0, 0.0588,0.235, 0.853, 1.0,1.0,0.9259,0.704,0.0296,0.011, 0.0,0.0, 0.     ]
+
+#Geant4 default units are MeV, add extra E-6 to the bins.
+
+/gps/hist/type energy
+/gps/hist/point 0.0E-6     0.0
+/gps/hist/point 1.0E-6     0.0
+/gps/hist/point 1.5E-6     0.0
+/gps/hist/point 2.25E-6    0.0588
+/gps/hist/point 2.481E-6   0.235
+/gps/hist/point 2.819E-6   0.853
+/gps/hist/point 2.952E-6   1.0
+/gps/hist/point 2.988E-6   1.0
+/gps/hist/point 3.024E-6   0.9259
+/gps/hist/point 3.1E-6     0.704
+/gps/hist/point 3.14E-6    0.0296
+/gps/hist/point 3.1807E-6  0.011
+/gps/hist/point 3.54E-6    0.0
+/gps/hist/point 5.5E-6     0.0
+
+
+# /gps/polarization 1 1 1
+
+
+# --> Extense Source
+/gps/pos/type Plane
+/gps/pos/shape Rectangle
+/gps/pos/halfx 2.5 m
+/gps/pos/halfy 2 m
+
+/gps/pos/centre 0 0 1 m
+
+#/gps/pos/confine DetectorVolume
+#/gps/pos/halfx 1 mm
+#/gps/pos/halfy 1 mm 
+
+#/gps/direction 0 0 -1
+/gps/ang/type iso
+/gps/number 1
+
+#run the code
+
+#30seg ~14k detected photons
+#/run/beamOn 10000000
+#6min/140k
+#/run/beamOn 100000000
+
+#~1h/1.5M
+/run/beamOn 1000000000
+
+
+#/run/beamOn 191800

@@ -1,0 +1,10 @@
+#initialise the geometry and the physics tables
+/run/initialize
+
+#set the beam parameters
+/gun/momentumAmp 1 GeV
+/gun/particle opticalphoton
+/gun/position 0 0 -1.9 cm
+
+#run the code
+/run/beamOn 100
