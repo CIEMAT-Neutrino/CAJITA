@@ -1,4 +1,4 @@
-# SimCajita
+# BasicSimulation_Geant4
 
 
 ## What is this?
