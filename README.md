@@ -48,6 +48,7 @@ We want to show Scintillation LAr light (see https://apc.u-paris.fr/~franco/g4do
 
 ## Running
 
+(Keep an eye on the operational system/arquitecture you are using)
   1. We are running without local installation of genat4 neither gcc so we make a source to them:
   ```console
   source /cvmfs/sft.cern.ch/lcg/views/LCG_100/x86_64-centos7-gcc8-opt/setup.sh
