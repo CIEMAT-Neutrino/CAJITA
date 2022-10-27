@@ -24,7 +24,9 @@ void MyDetectorConstruction::DefineMaterials()
     const G4int num = 2;  
     G4double energy[num] = {1.239841939*eV/0.128, 1.239841939*eV/0.9}; //momentum of optical photon; conversion wavelenght(um) to energy 
     G4double rindexAir[num] = {1.0, 1.0}; // Refraction index for propagation (for photons to propagate in Air)
+    G4double rindexLAr[num] = {1.38, 1.38}; //not considering dispersion so assume rindex constant
     G4double reflectivity[num] = {0.94, 0.94};
+    // G4double efficiency[num] = {0.8, 0.1};
 
     G4MaterialPropertiesTable *mptAir = new G4MaterialPropertiesTable();
     mptAir->AddProperty("RINDEX", energy, rindexAir, num);
@@ -90,7 +92,7 @@ void MyDetectorConstruction::ConstructScintillator()
 //    black =  G4Colour(0.,0.,0.); 
 
     // >> Set visAttributes for various components
-    G4VisAttributes* logicSolidVisAtt  = new G4VisAttributes(G4Colour(0.46, 0.53, 0.6, 0.3)); //grey + alpha
+    G4VisAttributes* logicSolidVisAtt   = new G4VisAttributes(G4Colour(0.46, 0.53, 0.6, 0.3)); //grey + alpha
     G4VisAttributes* logicHoleVisAtt   = new G4VisAttributes(G4Colour(0.0, 0.0, 0.0, 1)); //black + alpha
     G4VisAttributes* logicDetectorVisAtt = new G4VisAttributes(G4Colour(0.25,0.41, 0.88, 1)); //blue
     G4VisAttributes* logicSCVisAtt = new G4VisAttributes(G4Colour(0.25,0.88, 0.41, 0.5)); //green
@@ -104,6 +106,7 @@ void MyDetectorConstruction::ConstructScintillator()
     pRot->rotateX(90.*deg);
 
     // Surfaces
+
     G4OpticalSurface* OpSurface = new G4OpticalSurface("OpSurface");
     OpSurface -> SetModel(glisur);
     OpSurface -> SetType(dielectric_metal);
@@ -124,13 +127,13 @@ void MyDetectorConstruction::ConstructScintillator()
     OpSurface -> SetMaterialPropertiesTable(mptSurface); //propiedades de reflectividad
 
 
-    // >> Small SC - SBND (insensitive bar in the middle)
-    // G4Box *solidFrame = new G4Box("solidFrame", 40*mm, 105*mm, 1*mm); 
-    // G4LogicalVolume *logicFrame = new G4LogicalVolume(solidFrame, Plastic, "logicFrame");
+    // >> Carla small SC (insensitive bar in the middle)
+    G4Box *solidFrame = new G4Box("solidFrame", 40*mm, 105*mm, 1*mm); 
+    G4LogicalVolume *logicFrame = new G4LogicalVolume(solidFrame, Plastic, "logicFrame");
     // G4VPhysicalVolume *physFrame = new G4PVPlacement(0, G4ThreeVector(0*mm, 0.*mm, -999*mm), logicFrame, "physFrame", logicWorld, false, 0, 1);
     // logicFrame->SetVisAttributes(logicSolidVisAtt);
 
-    // >> 2x SBND SC
+    // >> SC Frame (small)
     G4Box *solidSC = new G4Box("solidSC", 37.5*mm, 49*mm, 2*mm); //200x75 mm a 5.5 cm de la fuente (172 medidas)
     logicSC1 = new G4LogicalVolume(solidSC, LAr, "logicSC1");
     logicSC2 = new G4LogicalVolume(solidSC, LAr, "logicSC2");
@@ -140,6 +143,7 @@ void MyDetectorConstruction::ConstructScintillator()
     logicSC2->SetVisAttributes(logicSCVisAtt);
 
     //SBND positions from json file:
+
     const Run_map pds_map=Run_map("sbnd_pds_mapping.json");
     G4String logic_SC_name="logicSC_";
     G4String physc_SC_name="physcSC_";
@@ -196,10 +200,6 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
 
 void MyDetectorConstruction::ConstructSDandField()
 {
-    // >> Example. one XARAPUCA:
-    // MySensitiveDetector *sensSC = new MySensitiveDetector("SensitiveSC");
-    // logicSC->SetSensitiveDetector(sensSC);
-
 
     // >> Make all XARAPUCAs sensitive 
     std::vector< MySensitiveDetector * > sensSC_v;
@@ -211,5 +211,12 @@ void MyDetectorConstruction::ConstructSDandField()
         logicSC_v[i]->SetSensitiveDetector(aux_sen);
         sensSC_v.push_back(aux_sen);
     }
+
+    // >> Dos ventanas carla separadas por centro insensible
+    // MySensitiveDetector *sensSC1 = new MySensitiveDetector("SensitiveSC1");
+    // MySensitiveDetector *sensSC2 = new MySensitiveDetector("SensitiveSC2");
+    // logicSC1->SetSensitiveDetector(sensSC1);
+    // logicSC2->SetSensitiveDetector(sensSC2);
+
 
 }
