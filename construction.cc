@@ -185,6 +185,11 @@ void MyDetectorConstruction::ConstructScintillator()
 
 G4VPhysicalVolume *MyDetectorConstruction::Construct()
 {
+    // We also need al WORLD volume to place the detector there.
+    // Every volume contains three parts: 
+    // Solid -> volume; Logical -> material; 
+    // Physical -> places the volume in G4 space together with rotation, translation ...
+    
     DefineMaterials();
 
     solidWorld = new G4Box("solidWorld", 2.5*m, 2*m, 1*m); //(name, half of the length)-> SBND case is 5x4x4, one half is 5x4x2 (2.5x2x1 since G4 doubles space)

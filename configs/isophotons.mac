@@ -34,4 +34,4 @@
 /gps/number 1
 
 #run the code
-/run/beamOn 100
+/run/beamOn 1000
