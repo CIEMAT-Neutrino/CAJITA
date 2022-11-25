@@ -57,8 +57,19 @@ source setup.sh
 ./run_build.sh
 ```
 
+OPTION#1: no json. Source information in the .mac. Compile to update changes in construction.
 ```console
-./build/box1 configs/isophotons.mac
+./build/box1 configs/isophotons.mac data/output.root
+```
+
+OPTION#2: Fixed positions given in construcction.cc (sbnd_pds_mapping.json). Source information by .mac.
+```console
+./build/box1 configs/isophotons.mac data/output.root
+```
+
+---> OPTION#3: json including positions for sensors + (.mac) information
+```console
+./build/box1 configs/Geo1_vis.json data/output.root
 ```
 
 The individual steps included in the scripts are the following:
