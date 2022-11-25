@@ -11,10 +11,11 @@
 class MyActionInitialization : public G4VUserActionInitialization
 {
 public:
-    MyActionInitialization();
+    MyActionInitialization(G4String out_file);
     ~MyActionInitialization();
     
     virtual void Build() const;
+    G4String foutfile;
 };
 
 #endif

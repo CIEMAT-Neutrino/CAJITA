@@ -36,7 +36,7 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
     // Information about the track that enters our sensitive volume
     G4Track *track = aStep->GetTrack();
 
-    // track->SetTrackStatus(fStopAndKill); //As soon as enters the detector the track is killed and no propagated, always detected in the upper surface of the detector
+    track->SetTrackStatus(fStopAndKill); //As soon as enters the detector the track is killed and no propagated, always detected in the upper surface of the detector
 
     // Points where the photon enters and leaves the detector
     G4StepPoint *preStepPoint = aStep->GetPreStepPoint();
@@ -58,6 +58,19 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
 
     G4VPhysicalVolume *physVol = touchable->GetVolume(); 
     G4ThreeVector posDetector = physVol->GetTranslation(); //detector position (where the photon hits)
+    
+    G4String sensor_name=physVol->GetName();
+    double   sensor=999;
+    if (sensor_name=="physSC"){
+        sensor=0;
+    }else if (sensor_name=="physSiPM1")
+    {
+        sensor=1;
+    }else if (sensor_name=="physSiPM2"){
+        sensor=2;
+    }else if (sensor_name=="physPMT"){
+        sensor=3;
+    }
 
     #ifndef G4MULTITHREADED // uncomment to print detector position and photon wavelenght
         // G4cout << "Detector position: " << posDetector << G4endl; //funciona
@@ -85,6 +98,7 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
     man->FillNtupleDColumn(1, 1, posDetector[0]);
     man->FillNtupleDColumn(1, 2, posDetector[1]);
     man->FillNtupleDColumn(1, 3, posDetector[2]);
+    man->FillNtupleDColumn(1, 4, sensor);
     man->AddNtupleRow(1);
 
     // if(G4UniformRand() < quEff->Value(wlen))
