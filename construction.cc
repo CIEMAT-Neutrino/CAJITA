@@ -114,27 +114,7 @@ void MyDetectorConstruction::ConstructScintillator()
     G4RotationMatrix* pRot = new G4RotationMatrix();
     pRot->rotateX(90.*deg);
 
-    // Surfaces
-
-    G4OpticalSurface* OpSurface = new G4OpticalSurface("OpSurface");
-    OpSurface -> SetModel(glisur);
-    OpSurface -> SetType(dielectric_metal);
-    OpSurface -> SetFinish(polished);
-    // G4LogicalBorderSurface* Surface = new G4LogicalBorderSurface("Surface", physSurfaceHole, physSiPM1, OpSurface); //physCajitaIn
-    // G4LogicalSkinSurface* Surface = new G4LogicalSkinSurface("Surface",logicSurfaceHole,OpSurface);
-
-    const G4int num = 2;  
-    G4double specularspike[num] = {1, 1};
-    G4double energy[num] = {1.239841939*eV/0.128, 1.239841939*eV/0.9}; //momentum of optical photon; conversion wavelenght(um) to energy 
-    G4double reflectivity[num] = {0.9,0.9};
-    // G4double efficiency[num] = {0.8, 0.1};
-
-    G4MaterialPropertiesTable *mptSurface = new G4MaterialPropertiesTable();
-    mptSurface->AddProperty("REFLECTIVITY", energy, reflectivity, num);
-    // mptSurface->AddProperty("EFFICIENCY", energy, efficiency, num);
-
-    OpSurface -> SetMaterialPropertiesTable(mptSurface); //propiedades de reflectividad
-
+   
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------- //
 // --- OPCION#1: Construir la geometria que nos interesa y compilar cada vez que cambiemos algo --- //
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------- //
@@ -221,7 +201,40 @@ void MyDetectorConstruction::ConstructScintillator()
     logicSiPM2_tapa = new G4LogicalVolume(solidSiPM_tapa, Metal, "logicSiPM2_tapa");
     logicSiPM1_tapa->SetVisAttributes(logicSolidVisAtt); //Not necessary if we kill the track when reaches detector
     logicSiPM2_tapa->SetVisAttributes(logicSolidVisAtt);
+    
+    // --- Cage field (Reflective surface) --- //
+    // G4Box *solid_side_h= new G4Box("h_side", 2.53*m, 1*mm, 1*m); 
+    // G4LogicalVolume  *logic_side_h = new G4LogicalVolume(solid_side_h, Metal, "h_side");
+    // logic_side_h->SetVisAttributes(logicSolidVisAtt);
+    // G4VPhysicalVolume  *phys_side_top = new G4PVPlacement(0, G4ThreeVector(0*m, 2.04*m, 0*m), logic_side_h, "phys_side_t", logicWorld, false, 1, true);  
+    // G4VPhysicalVolume  *phys_side_bot = new G4PVPlacement(0, G4ThreeVector(0*m,-2.04*m, 0*m), logic_side_h, "phys_side_b", logicWorld, false, 1, true);  
 
+    // G4Box *solid_side_v= new G4Box("v_side", 1*mm,  2.05*m , 1*m); 
+    // G4LogicalVolume  *logic_side_v = new G4LogicalVolume(solid_side_v, Metal, "v_side");
+    // logic_side_v->SetVisAttributes(logicSolidVisAtt);
+    // G4VPhysicalVolume  *phys_side_left  = new G4PVPlacement(0, G4ThreeVector( 2.54*m, 0*m, 0*m), logic_side_v,  "phys_side_l", logicWorld, false, 1, true);  
+    // G4VPhysicalVolume  *phys_side_right = new G4PVPlacement(0, G4ThreeVector(-2.54*m, 0*m, 0*m), logic_side_v, "phys_side_r", logicWorld, false, 1, true);  
+    
+    // G4OpticalSurface* Cage_field_surface = new G4OpticalSurface("Cage_field_surface");
+    // Cage_field_surface->SetType(dielectric_metal);
+    // Cage_field_surface->SetModel(unified);
+    // Cage_field_surface->SetFinish(polished);
+
+    // int Metal_num = 12;
+    // double reflectivity_metal_E[Metal_num] = {1.77, 2.0675, 2.481, 2.819, 2.953, 3.1807, 3.54, 4.135, 4.962, 5.39, 7., 15.    };
+    // double reflectivity_metal  [Metal_num] = {0.66,  0.64,  0.62,  0.60,  0.59,  0.57,  0.53,  0.47,  0.39,  0.36,  0.27, 0.25};
+
+    // double R_factor=0.7666; //takes into account the strips effective area of the field cage
+    // for (int i=0; i<Metal_num; i++)reflectivity_metal[i]=reflectivity_metal[i]*R_factor;
+
+    // G4MaterialPropertiesTable *mptMetal = new G4MaterialPropertiesTable();
+    // mptMetal->AddProperty("REFLECTIVITY", reflectivity_metal_E, reflectivity_metal, Metal_num);
+    
+    // Cage_field_surface->SetMaterialPropertiesTable(mptMetal);
+    // new G4LogicalSkinSurface("AnodeSurface", logic_side_h, Cage_field_surface);
+    // new G4LogicalSkinSurface("AnodeSurface", logic_side_v, Cage_field_surface);
+
+    // Read and load from the .json file //
     if (check_is_file_type(fjsonName) && check_json_file(fjsonName))
     { // load geometry from the json file instead:
         const Json_file fjson = Json_file(fjsonName);
@@ -267,7 +280,6 @@ void MyDetectorConstruction::ConstructScintillator()
         physSiPM1 = new G4PVPlacement(0, G4ThreeVector(35 * mm, 55 * mm, 49 * mm), logicSiPM1, "physSiPM1", logicWorld, false, 1, true); // 18.5 //18 antes
         physSiPM2 = new G4PVPlacement(0, G4ThreeVector(-35 * mm, 55 * mm, 49 * mm), logicSiPM2, "physSiPM2", logicWorld, false, 1, true); //-17.5
     }
-    
 }
 
 G4VPhysicalVolume *MyDetectorConstruction::Construct()
