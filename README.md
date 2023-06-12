@@ -143,3 +143,11 @@ The individual steps included in the scripts are the following:
 
   >> #PMT->GetEntries()
 ```
+
+## LICENSE
+[MIT](https://choosealicense.com/licenses/mit/)
+
+## Authors (alphabetical order, please insert your name here if you contribute to this project)
+
+* [**Alvárez-Garrote, Rodrigo**](https://github.com/LauPM)
+* [**Pérez-Molina, Laura**](https://github.com/rodralva)
