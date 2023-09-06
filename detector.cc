@@ -61,16 +61,10 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
     
     G4String sensor_name=physVol->GetName();
     double   sensor=999;
-    if (sensor_name=="physSC"){
-        sensor=0;
-    }else if (sensor_name=="physSiPM1")
-    {
-        sensor=1;
-    }else if (sensor_name=="physSiPM2"){
-        sensor=2;
-    }else if (sensor_name=="physPMT"){
-        sensor=3;
-    }
+    if (sensor_name=="physSC")         { sensor=0;}
+    else if (sensor_name=="physSiPM1") { sensor=1;}
+    else if (sensor_name=="physSiPM2") { sensor=2;}
+    else if (sensor_name=="physPMT")   { sensor=3;}
 
     #ifndef G4MULTITHREADED // uncomment to print detector position and photon wavelenght
         // G4cout << "Detector position: " << posDetector << G4endl; //funciona
