@@ -1,4 +1,5 @@
 // Template for any Geant4 applications
+#include "G4MTRunManager.hh" // for multithreading
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
 #include "G4VisManager.hh"
@@ -21,18 +22,11 @@ int main(int argc, char **argv)
     G4UIExecutive *ui = 0;
     G4RunManager *runManager = new G4RunManager();
 
-
     G4String second_arg = "none";
     G4String third_arg  = "none";
 
-    if (argc == 1) // number of commands arguments is 1 (i.e no arguments in the command line)
-    {
-        ui = new G4UIExecutive(argc, argv);
-    }
-    else if(argc == 2)
-    {
-        second_arg = argv[1];
-    }
+    if (argc == 1)     { ui = new G4UIExecutive(argc, argv); }// number of commands arguments is 1 (i.e no arguments in the command line)
+    else if(argc == 2) { second_arg = argv[1]; }
     else if(argc == 3)
     {
         second_arg = argv[1];
@@ -47,14 +41,15 @@ int main(int argc, char **argv)
     {//sanitycheck
         throw std::runtime_error("WARNING MESSAGE: \n No output rootfile provided from terminal, please, give one!");
     }
+    
+    #ifdef G4MULTITHREADED
+    std::cout<<"multithreading...."<<std::endl;
+    runManager->SetNumberOfThreads(1); // 1 for no multithreading (default) you can change to the number of threads you want
+    #endif
 
-    // Use the geometry we define in construction.cc
-    runManager->SetUserInitialization(new MyDetectorConstruction(second_arg));
-    // Use the physics we define in physics.cc
-    runManager->SetUserInitialization(new MyPhysicsList());
-    // ActionInitialization
-    runManager->SetUserInitialization(new MyActionInitialization(out_file));
-
+    runManager->SetUserInitialization(new MyDetectorConstruction(second_arg)); // Use the geometry we define in construction.cc
+    runManager->SetUserInitialization(new MyPhysicsList()); // Use the physics we define in physics.cc
+    runManager->SetUserInitialization(new MyActionInitialization(out_file)); // ActionInitialization
     runManager->Initialize();
 
     G4VisManager *visManager = new G4VisExecutive();
@@ -64,12 +59,8 @@ int main(int argc, char **argv)
 
     if (ui)
     {
-
-        UImanager->ApplyCommand("/vis/scene/add/axes");
-        // // The comented lines are now stored in vis.mac
+        // The vis.mac file contains the visualization settings
         UImanager->ApplyCommand("/control/execute configs/vis.mac");
-        UImanager->ApplyCommand("/vis/viewer/set/background grey");
-
         ui->SessionStart();
     }
     else if (check_is_file_type(second_arg)) // .json file initialization
@@ -95,7 +86,6 @@ int main(int argc, char **argv)
             for (auto line : fjson.json_map["G4_beam_settings"])
             {
                 G4String g4_line = line.get<std::string>();
-                // std::cout << g4_line << std::endl;
                 UImanager->ApplyCommand(g4_line);
             }
             ui->SessionStart();
@@ -105,7 +95,6 @@ int main(int argc, char **argv)
             for (auto line : fjson.json_map["G4_beam_settings"])
             {
                 G4String g4_line = line.get<std::string>();
-                // std::cout << g4_line << std::endl;
                 UImanager->ApplyCommand(g4_line);
             }
         }
@@ -118,7 +107,6 @@ int main(int argc, char **argv)
         UImanager->ApplyCommand(command + fileName);
 
         UImanager->ApplyCommand("/vis/open OGL");
-        // UImanager->ApplyCommand("/vis/viewer/set/viewpointVector 1 1 1");;
         UImanager->ApplyCommand("/vis/scene/add/axes");
         UImanager->ApplyCommand("/vis/drawVolume");
         // Draw the trajectory and autorefresh :)
@@ -126,7 +114,7 @@ int main(int argc, char **argv)
         UImanager->ApplyCommand("/vis/scene/add/trajectories smooth");
 
         UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate 1000");
-        UImanager->ApplyCommand("/vis/viewer/set/background grey");
+        UImanager->ApplyCommand("/vis/viewer/set/background white");
 
         ui->SessionStart();
     }
