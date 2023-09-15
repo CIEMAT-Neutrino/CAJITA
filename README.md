@@ -48,29 +48,34 @@ We want to show Scintillation LAr light (see https://apc.u-paris.fr/~franco/g4do
 
 ## Running
 
----> Atomatic setup <---
+Once you have cloned the repository, you can setup the enviroment with the following commands:
 ```console
 source setup.sh
-```
-
-```console
 ./run_build.sh
 ```
 
-OPTION#1: no json. Source information in the .mac. Compile to update changes in construction.
+Before the compilation occurs you will need to choose a geometry to be used among the displayed options. Then you can run the code.
+
+Therer are three options of configuring the geometry that can be run as:
+    - option1: no json. Source information in the .mac. Compile to update changes in construction.
 ```console
 ./build/box1 configs/isophotons.mac data/output.root
 ```
-
-OPTION#2: Fixed positions given in construcction.cc (sbnd_pds_mapping.json). Source information by .mac.
+    - option2: fixed positions given in construcction.cc (sbnd_pds_mapping.json). Source information by .mac
 ```console
 ./build/box1 configs/isophotons.mac data/output.root
 ```
-
----> OPTION#3: json including positions for sensors + (.mac) information
+    - option3: json including positions for sensors + (.mac) information
 ```console
 ./build/box1 configs/Geo1_vis.json data/output.root
 ```
+
+You can also find some of the geometries used in the IR02 setups:
+    - cajita_xa-hd.mac -> measurements from October 2021 to February 2022 of the X-ARAPUCA DUNE HD (to be run as option1)
+    - cajita_xa-sbnd.json -> measurements from Febreuary 2023 to April 2023 of the X-ARAPUCA SBND (to be run as option3). 
+    There are two types of files for production (*_prod) and for visualization. 
+    Moreover there were two measurements to be made with visible ligth (VIS) and with alpha source (VUV)
+    - megacell.json -> measurements from August 2023 to * of the MeggaCell DUNE-VD (to be run as option3).
 
 The individual steps included in the scripts are the following:
 (Keep an eye on the operational system/arquitecture you are using)
@@ -106,7 +111,6 @@ The individual steps included in the scripts are the following:
   ```console
   ./box1 run.mac
   ```
-
 
 ## Visualizing
   ```console
@@ -151,3 +155,4 @@ The individual steps included in the scripts are the following:
 
 * [**Alvárez-Garrote, Rodrigo**](https://github.com/LauPM)
 * [**Pérez-Molina, Laura**](https://github.com/rodralva)
+* [**Manthey Corchado, Sergio**](https://github.com/mantheys)
