@@ -21,7 +21,6 @@
 #include "G4GenericMessenger.hh"
 
 #include "detector.hh"
-#include "json_class.hh"
 
 class MyDetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -30,25 +29,27 @@ public:
     MyDetectorConstruction(G4String jsonName); //constructor
     ~MyDetectorConstruction(); //destructor
 
+
     virtual G4VPhysicalVolume *Construct();
 
 private:
-    G4Box *solidWorld,  *solidCajitaOut, *solidSiPM;
-    G4LogicalVolume *logicWorld, *logicCajitaOut, *logicSiPM1, *logicSiPM2,*logicSiPM3, *logicSiPM4, *logicSC;
-    G4VPhysicalVolume *physWorld, *physCajitaOut, *physSiPM1, *physSiPM2, *physSC;
+    G4Box *solidWorld,  *solidCajitaOut, *solidCajitaIn, *solidSiPM;
+    G4LogicalVolume *logicWorld, *logicCajitaOut,*logicCajitaIn, *logicSiPM1, *logicSiPM2, *logicPMT, *logicSC, *logicSC1, *logicSC2, *logicBoxOut, *logicBoxIn, *logicprueba;
+    G4VPhysicalVolume *physWorld, *physCajitaOut, *physCajitaIn, *physSiPM1, *physSiPM2, *physPMT, *physSC,*physSC1,*physSC2, *physBoxOut, *physBoxIn;
     G4Material *Air, *LAr, *Plastic, *Metal, *Iron, *Nickel, *Copper;
 
     // Tapas para los sensores:
     G4LogicalVolume *logicSiPM1_tapa, *logicSiPM2_tapa, *logicSC_tapa;
-    G4VPhysicalVolume *physSiPM1_tapa, *physSiPM2_tapa, *physSC_tapa;
+    G4VPhysicalVolume *physSiPM1_tapa, *physSiPM2_tapa, *physSC_tapa ;
+
+    std::vector<G4LogicalVolume *>   logicSC_v={};
+    std::vector<G4VPhysicalVolume *> physcSC_v={};
 
     G4String fjsonName;
     void ConstructScintillator();
     void DefineMaterials();
     virtual void ConstructSDandField(); //construct sensitive detector and E/B field
 };
-
-
 
 #endif
 
