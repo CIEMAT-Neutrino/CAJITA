@@ -85,10 +85,10 @@ void MyDetectorConstruction::ConstructScintillator()
 {
 
     // >> Set visAttributes for various components
-    G4VisAttributes *logicSolidVisAtt = new G4VisAttributes(G4Colour(0.46, 0.53, 0.6, 0.3));   // grey + alpha
-    G4VisAttributes *logicHoleVisAtt  = new G4VisAttributes(G4Colour(0.0, 0.0, 0.0, 1));        // black + alpha
-    G4VisAttributes *logicSCVisAtt    = new G4VisAttributes(G4Colour(0.25, 0.88, 0.41, 0.5));     // green
-    G4VisAttributes *logicDetectorVisAtt = new G4VisAttributes(G4Colour(1, 0, 0, 1)); // red
+    G4VisAttributes *logicSolidVisAtt = new G4VisAttributes(G4Colour(0.46, 0.53, 0.6, 0.3));  // grey + alpha
+    G4VisAttributes *logicHoleVisAtt  = new G4VisAttributes(G4Colour(0.0, 0.0, 0.0, 1));      // black + alpha
+    G4VisAttributes *logicSCVisAtt    = new G4VisAttributes(G4Colour(0.25, 0.88, 0.41, 0.5)); // green
+    G4VisAttributes *logicDetectorVisAtt = new G4VisAttributes(G4Colour(1, 0, 0, 1));         // red
     G4VisAttributes *logicFiltroVisAtt   = new G4VisAttributes(G4Colour(0.0, 0.0, 0.0, 0.7));
     logicSolidVisAtt->SetForceSolid(true);
     logicHoleVisAtt->SetForceWireframe(true);
@@ -111,50 +111,41 @@ void MyDetectorConstruction::ConstructScintillator()
     auto innerBox = new G4Box("solidCajitaOut2", 71.875 * mm, 52.325 * mm, 71.875 * mm);
     // auto innerBox = new G4Box("solidCajitaOut2", 81.875 * mm, 24.5 * mm, 71.875 * mm);
     G4SubtractionSolid *solidCajitaOut = new G4SubtractionSolid("solidCajitaOut",outerBox,innerBox);
-    logicCajitaOut = new G4LogicalVolume(solidCajitaOut, Plastic, "logicCajitaOut");
+    G4LogicalVolume *logicCajitaOut = new G4LogicalVolume(solidCajitaOut, Plastic, "logicCajitaOut");
     // physCajitaOut  = new G4PVPlacement(0, G4ThreeVector(10 * mm, 25 * mm, 0 * mm), logicCajitaOut, "physCajitaOut", logicWorld, false, 1, true);
-    physCajitaOut  = new G4PVPlacement(0, G4ThreeVector(0 * mm, 52.025 * mm, 0 * mm), logicCajitaOut, "physCajitaOut", logicWorld, false, 1, true);
+    G4VPhysicalVolume *physCajitaOut  = new G4PVPlacement(0, G4ThreeVector(0 * mm, 52.025 * mm, 0 * mm), logicCajitaOut, "physCajitaOut", logicWorld, false, 1, true);
     logicCajitaOut->SetVisAttributes(logicSolidVisAtt); // solid+grey
 
 
     // ---- Rebaba ----- //
-    G4Tubs *solidFalphaOut = new G4Tubs("solidFalphaOut", 12.5 * mm, 13.5 * mm, 0.85 * mm, 65*deg, 230*deg); //rebaba
-    G4LogicalVolume   *logicFalphaOut = new G4LogicalVolume(solidFalphaOut, Metal, "logicFalphaOut");
-    G4VPhysicalVolume *physFalphaOut  = new G4PVPlacement(pRotX, G4ThreeVector(0 * mm, 103.2 * mm, 0* mm), logicFalphaOut,  "physFalphaOut", logicWorld, false, 0, 1);
-    logicFalphaOut->SetVisAttributes(logicSolidVisAtt);
+    // G4Tubs *solidFalphaOut = new G4Tubs("solidFalphaOut", 12.5 * mm, 13.5 * mm, 0.85 * mm, 65*deg, 230*deg); //rebaba
+    // G4LogicalVolume   *logicFalphaOut = new G4LogicalVolume(solidFalphaOut, Metal, "logicFalphaOut");
+    // G4VPhysicalVolume *physFalphaOut  = new G4PVPlacement(pRotX, G4ThreeVector(0 * mm, 103.2 * mm, 0* mm), logicFalphaOut,  "physFalphaOut", logicWorld, false, 0, 1);
+    // logicFalphaOut->SetVisAttributes(logicSolidVisAtt);
 
 
     // --- SC --- //
     G4Box *solidSC = new G4Box("solidSC", 71.875 * mm, 0.01 * mm, 71.875 * mm); //--<<-- 1 filtro de VD X-ARAPUCA
     logicSC = new G4LogicalVolume(solidSC, LAr, "logicSC");            //--<<--
-    // physSC = new G4PVPlacement(0, G4ThreeVector(0 * mm, -2 * mm, 53 * mm), logicSC, "physSC", logicWorld, false, 1, true);
     logicSC->SetVisAttributes(logicSCVisAtt);
 
     // --- SiPM x2 --- //
-    solidSiPM = new G4Box("solidSiPM", 0.5 * mm, 3 * mm, 3 * mm);
+    G4Box *solidSiPM = new G4Box("solidSiPM", 0.5 * mm, 3 * mm, 3 * mm);
     logicSiPM1 = new G4LogicalVolume(solidSiPM, LAr, "logicSiPM1");
-    logicSiPM2 = new G4LogicalVolume(solidSiPM, LAr, "logicSiPM2");
     logicSiPM1->SetVisAttributes(logicDetectorVisAtt);
+    logicSiPM2 = new G4LogicalVolume(solidSiPM, LAr, "logicSiPM2");
     logicSiPM2->SetVisAttributes(logicDetectorVisAtt);
 
     // --- Tapas --- //
     G4Box *solidSiPM_tapa = new G4Box("solidSiPM_tapa", 0.5 * mm, 3 * mm, 3 * mm);
-    logicSiPM1_tapa = new G4LogicalVolume(solidSiPM_tapa, Metal, "logicSiPM1_tapa");
-    logicSiPM2_tapa = new G4LogicalVolume(solidSiPM_tapa, Metal, "logicSiPM2_tapa");
+    G4LogicalVolume *logicSiPM1_tapa = new G4LogicalVolume(solidSiPM_tapa, Metal, "logicSiPM1_tapa");
+    G4LogicalVolume *logicSiPM2_tapa = new G4LogicalVolume(solidSiPM_tapa, Metal, "logicSiPM2_tapa");
     logicSiPM1_tapa->SetVisAttributes(logicSolidVisAtt);
     logicSiPM2_tapa->SetVisAttributes(logicSolidVisAtt);
 
-    // --- tapa --- //
-    // G4Box *solidSC_tapa = new G4Box("solidSC", 37.5 * mm, 2 * mm, 110 * mm); //--<<-- 1 filtro de SBND X-ARAPUCA
-    // logicSC_tapa = new G4LogicalVolume(solidSC_tapa, Metal, "logicSC");            //--<<--
-    // physSC_tapa = new G4PVPlacement(0, G4ThreeVector(0 * mm, -6 * mm, 0 * mm), logicSC_tapa, "physSC_tapa", logicWorld, false, 1, true);
-    // logicSC_tapa->SetVisAttributes(logicSolidVisAtt);
-
-    
     if (check_is_file_type(fjsonName) && check_json_file(fjsonName))
     { // load geometry from the json file instead:
         const Json_file fjson = Json_file(fjsonName);
-
         std::vector<double> SiPM1_x ,SiPM2_x ,SiPM1_x_tapa ,SiPM2_x_tapa,SiPM_rot;
 
         for (double coord:fjson.json_map["SiPM1"]["X"]) SiPM1_x.push_back(coord);
@@ -162,7 +153,6 @@ void MyDetectorConstruction::ConstructScintillator()
         for (double coord:fjson.json_map["SiPM1_tapa"]["X"]) SiPM1_x_tapa.push_back(coord);
         for (double coord:fjson.json_map["SiPM2_tapa"]["X"]) SiPM2_x_tapa.push_back(coord);
         for (double coord:fjson.json_map["SiPM_rot"]) SiPM_rot.push_back(coord);
-        
         
         G4RotationMatrix *R_SiPM1 = new G4RotationMatrix();
         G4RotationMatrix *R_SiPM2 = new G4RotationMatrix();
@@ -175,58 +165,54 @@ void MyDetectorConstruction::ConstructScintillator()
         R_SiPM2->rotateY(-SiPM_rot[1]*deg);
         R_SiPM2->rotateZ(-SiPM_rot[2]*deg);
         
-        physSiPM1      = new G4PVPlacement(R_SiPM1, G4ThreeVector(     SiPM1_x[0] * mm,      SiPM1_x[1] * mm,      SiPM1_x[2] * mm), logicSiPM1,      "physSiPM1",      logicWorld, false, 1, true);
-        physSiPM1_tapa = new G4PVPlacement(R_SiPM1, G4ThreeVector(SiPM1_x_tapa[0] * mm, SiPM1_x_tapa[1] * mm, SiPM1_x_tapa[2] * mm), logicSiPM1_tapa, "physSiPM1_tapa", logicWorld, false, 1, true);
+        G4VPhysicalVolume *physSiPM1      = new G4PVPlacement(R_SiPM1, G4ThreeVector(     SiPM1_x[0] * mm,      SiPM1_x[1] * mm,      SiPM1_x[2] * mm), logicSiPM1,      "physSiPM1",      logicWorld, false, 1, true);
+        G4VPhysicalVolume *physSiPM1_tapa = new G4PVPlacement(R_SiPM1, G4ThreeVector(SiPM1_x_tapa[0] * mm, SiPM1_x_tapa[1] * mm, SiPM1_x_tapa[2] * mm), logicSiPM1_tapa, "physSiPM1_tapa", logicWorld, false, 1, true);
 
-        physSiPM2      = new G4PVPlacement(R_SiPM2, G4ThreeVector(     SiPM2_x[0] * mm,      SiPM2_x[1] * mm,      SiPM2_x[2] * mm), logicSiPM2,      "physSiPM2",      logicWorld, false, 1, true);
-        physSiPM2_tapa = new G4PVPlacement(R_SiPM2, G4ThreeVector(SiPM2_x_tapa[0] * mm, SiPM2_x_tapa[1] * mm, SiPM2_x_tapa[2] * mm), logicSiPM2_tapa, "physSiPM2_tapa", logicWorld, false, 1, true);
+        G4VPhysicalVolume *physSiPM2      = new G4PVPlacement(R_SiPM2, G4ThreeVector(     SiPM2_x[0] * mm,      SiPM2_x[1] * mm,      SiPM2_x[2] * mm), logicSiPM2,      "physSiPM2",      logicWorld, false, 1, true);
+        G4VPhysicalVolume *physSiPM2_tapa = new G4PVPlacement(R_SiPM2, G4ThreeVector(SiPM2_x_tapa[0] * mm, SiPM2_x_tapa[1] * mm, SiPM2_x_tapa[2] * mm), logicSiPM2_tapa, "physSiPM2_tapa", logicWorld, false, 1, true);
         
+            if(fjson.json_map.contains("rebaba_sipms"))
+            {
+                std::cout<<"---------------- INSERTING SIPMs' REBABA ----------------"<<std::endl;
+                // --- Rebaba para acercar los SiPMs a la fuente (Geo1_ancho) --- //
+                std::vector<double> rebaba_dim,rebaba_x,rebaba_rot;
+                for (double coord:fjson.json_map["rebaba_sipms"]["dim"]) rebaba_dim.push_back(coord);
+                for (double coord:fjson.json_map["rebaba_sipms"]["x"])   rebaba_x.push_back(coord);
+                for (double coord:fjson.json_map["rebaba_sipms"]["rot"]) rebaba_rot.push_back(coord);
+
+                G4RotationMatrix *R_rebaba = new G4RotationMatrix();
+                R_rebaba->rotateX(rebaba_rot[0]*deg);
+                R_rebaba->rotateY(rebaba_rot[1]*deg);
+                R_rebaba->rotateZ(rebaba_rot[2]*deg);
+
+                G4Box *solidSiPMRebaba = new G4Box("solidSiPMOut", rebaba_dim[0] * mm, rebaba_dim[1] * mm, rebaba_dim[2] * mm);
+                G4LogicalVolume *logicSiPMRebaba1 = new G4LogicalVolume(solidSiPMRebaba, Plastic, "logicSiPMOut1");
+                G4LogicalVolume *logicSiPMRebaba2 = new G4LogicalVolume(solidSiPMRebaba, Plastic, "logicSiPMOut2");
+                logicSiPMRebaba1->SetVisAttributes(logicSolidVisAtt);
+                logicSiPMRebaba2->SetVisAttributes(logicSolidVisAtt);
+                
+                G4VPhysicalVolume *physSiPMRebaba1 = new G4PVPlacement(R_rebaba, G4ThreeVector( rebaba_x[0] * mm, rebaba_x[1] * mm, rebaba_x[2] * mm), logicSiPMRebaba1, "physSiPMRebaba1", logicWorld, false, 1, true);
+                G4VPhysicalVolume *physSiPMRebaba2 = new G4PVPlacement(R_rebaba, G4ThreeVector(-rebaba_x[0] * mm, rebaba_x[1] * mm, rebaba_x[2] * mm), logicSiPMRebaba2, "physSiPMRebaba2", logicWorld, false, 1, true);
+            }
             if(fjson.json_map.contains("XArapuca"))
             {
                 std::vector<double> XA;
                 for (double coord:fjson.json_map["XArapuca"]["X"]) XA.push_back(coord);
                 std::cout<<"---------------- XArapuca position entered in json ----------------"<<std::endl;
-                physSC = new G4PVPlacement(0, G4ThreeVector(XA[0] * mm, XA[1] * mm, XA[2] * mm), logicSC, "physSC", logicWorld, false, 1, true);
+                G4VPhysicalVolume *physSC = new G4PVPlacement(0, G4ThreeVector(XA[0] * mm, XA[1] * mm, XA[2] * mm), logicSC, "physSC", logicWorld, false, 1, true);
             }
             else
             {
                 std::cout<<"---------------- XArapuca default position ----------------"<<std::endl;
-                // physSC = new G4PVPlacement(0, G4ThreeVector(-10 * mm, 0.5 * mm, 0 * mm), logicSC, "physSC", logicWorld, false, 1, true);
-                physSC = new G4PVPlacement(0, G4ThreeVector(0 * mm, 0.5 * mm, 0 * mm), logicSC, "physSC", logicWorld, false, 1, true);
+                G4VPhysicalVolume *physSC = new G4PVPlacement(0, G4ThreeVector(0 * mm, 0.5 * mm, 0 * mm), logicSC, "physSC", logicWorld, false, 1, true);
             }
-        
-            
-            // FINAL GEOMETRY --> 4SiPMs and VUV 23mm closer to the source//
-            // if(fjson.json_map.contains("rebaba_sipms"))
-            // {
-            //     std::cout<<"---------------- INSERTING SIPMs' REBABA (default dimensions 23x8x16 mm3 - recompile and change if necessary) ----------------"<<std::endl;
-            //     // --- Rebaba para acercar los SiPMs a la fuente (Geo1_ancho) --- //
-            //     G4Box *solidSiPMRebaba = new G4Box("solidSiPMOut", 5*mm, 10*mm, 71.875*mm); //11.5 sobresalir en el ejeX
-            //     G4LogicalVolume *logicSiPMRebaba = new G4LogicalVolume(solidSiPMRebaba, Plastic, "logicSiPMOut");
-            //     logicSiPMRebaba->SetVisAttributes(logicSolidVisAtt);
-
-            //     std::vector<double> rebaba_x,rebaba_rot;
-            //     for (double coord:fjson.json_map["rebaba_sipms"]["x"])   rebaba_x.push_back(coord);
-            //     for (double coord:fjson.json_map["rebaba_sipms"]["rot"]) rebaba_rot.push_back(coord);
-
-            //     G4RotationMatrix *R_rebaba      = new G4RotationMatrix();
-            //     R_rebaba->rotateX(rebaba_rot[0]*deg);
-            //     R_rebaba->rotateY(rebaba_rot[1]*deg);
-            //     R_rebaba->rotateZ(rebaba_rot[2]*deg);
-
-            //     G4VPhysicalVolume *physSiPMRebaba = new G4PVPlacement(R_rebaba, G4ThreeVector(rebaba_x[0] * mm, rebaba_x[1] * mm, rebaba_x[2] * mm), logicSiPMRebaba, "physSiPMRebaba", logicWorld, false, 1, true);
-            // }
-
-
-        // physSiPM1 = new G4PVPlacement(pRotZ, G4ThreeVector( 71.875 * mm, 10 * mm,  7 * mm), logicSiPM1, "physSiPM1", logicWorld, false, 1, true); // 18.5 //18 antes
-        // physSiPM2 = new G4PVPlacement(pRotZ, G4ThreeVector( 71.875 * mm, 10 * mm, -7 * mm), logicSiPM2, "physSiPM2", logicWorld, false, 1, true); //-17.5
-        
     }
     
     else
     {
-        physSiPM2 = new G4PVPlacement(0, G4ThreeVector( 71.875 * mm, 99.15 * mm,  6.35 * mm), logicSiPM2, "physSiPM2", logicWorld, false, 1, true); 
-        physSiPM1 = new G4PVPlacement(0, G4ThreeVector( 71.875 * mm, 99.15 * mm, -6.35 * mm), logicSiPM1, "physSiPM1", logicWorld, false, 1, true); 
+        G4VPhysicalVolume *physSC    = new G4PVPlacement(0, G4ThreeVector(0 * mm, 0.5 * mm, 0 * mm)            , logicSC,    "physSC",    logicWorld, false, 1, true);
+        G4VPhysicalVolume *physSiPM2 = new G4PVPlacement(0, G4ThreeVector(  70.875 * mm, 99.15 * mm, 0 * mm), logicSiPM2, "physSiPM2", logicWorld, false, 1, true); 
+        G4VPhysicalVolume *physSiPM1 = new G4PVPlacement(0, G4ThreeVector( -70.875 * mm, 99.15 * mm, 0 * mm), logicSiPM1, "physSiPM1", logicWorld, false, 1, true); 
     }   
 }
 
@@ -255,6 +241,7 @@ void MyDetectorConstruction::ConstructSDandField()
     MySensitiveDetector *sensSiPM1 = new MySensitiveDetector("SensitiveSiPM1");
     MySensitiveDetector *sensSiPM2 = new MySensitiveDetector("SensitiveSiPM2");
     
+    // check geometry.hh and include the logic of the detector you need to be sensitive
     logicSC->SetSensitiveDetector(sensSC);
     if (check_is_file_type(fjsonName) && check_json_file(fjsonName))
     { 

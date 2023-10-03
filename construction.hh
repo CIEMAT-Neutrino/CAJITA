@@ -33,15 +33,14 @@ public:
     virtual G4VPhysicalVolume *Construct();
 
 private:
-    G4Box *solidWorld,  *solidCajitaOut, *solidSiPM;
-    G4LogicalVolume *logicWorld, *logicCajitaOut, *logicSiPM1, *logicSiPM2,*logicSiPM3, *logicSiPM4, *logicSC;
-    G4VPhysicalVolume *physWorld, *physCajitaOut, *physSiPM1, *physSiPM2, *physSC;
+    G4Box *solidWorld;
+    G4LogicalVolume *logicWorld;
+    G4VPhysicalVolume *physWorld;
     G4Material *Air, *LAr, *Plastic, *Metal, *Iron, *Nickel, *Copper;
 
-    // Tapas para los sensores:
-    G4LogicalVolume *logicSiPM1_tapa, *logicSiPM2_tapa, *logicSC_tapa;
-    G4VPhysicalVolume *physSiPM1_tapa, *physSiPM2_tapa, *physSC_tapa;
-
+    // SENSITIVE DETECTORS NEED TO BE DEFINED HERE
+    G4LogicalVolume *logicSC, *logicSiPM1, *logicSiPM2;
+    
     G4String fjsonName;
     void ConstructScintillator();
     void DefineMaterials();
