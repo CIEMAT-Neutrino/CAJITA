@@ -1,7 +1,7 @@
-# CAJITA SIMULATION GEANT4
+#  SIM_LAB_GEANT4
+ 
 
-
-## SUMMARY
+## SUMMARY 
 This is a basic example for performing simulations in Geant4. The world volume is filled with LAr and we place different detectors
 that can be included with given positions in a .json or manually. The output is a .root file which contains (_Photon_) NTuple with the position (X,Y,Z) of the photon hit in your detector and the incidence angle (theta, phi).
 
@@ -49,7 +49,7 @@ We want to show Scintillation LAr light (see https://apc.u-paris.fr/~franco/g4do
 
 ## RUN GEANT4 SIMULATION
 
-### 1.- SETUP AND COMPILATION
+### 🇬4️⃣ 1. SETUP AND COMPILATION
 
 Once you have cloned the repository, you can setup the enviroment with the following commands:
 ```console
@@ -69,9 +69,13 @@ Before the compilation occurs you will need to choose a geometry to be used amon
 * *run_build.sh* script only runs from main folder (it will ask for your confirmation to continue with the process)
 * You need to choose a geometry (*geometries* and *configs* folders 📂) for the compilation. Each change need to be recompiled !!
 
+🆕 Once you have clearly chosen your geometry you can compile with ```./scripts/run_build.sh geometry``` to avoid the second question of the script.
+
+![Alt text](build_argument.png)
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-### 2.- RUN YOUR CHOSEN GEOMETRY
+### 👾 2. RUN YOUR CHOSEN GEOMETRY
 
 Therer are three options of configuring the geometry that can be run as:
 
@@ -97,7 +101,7 @@ Therer are three options of configuring the geometry that can be run as:
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-### 3.- GEOMETRIES EXAMPLES
+### 🧪 3. GEOMETRIES EXAMPLES
 You can also find some of the geometries used in the IR02 setups:
 
 * ```cajita_xa-hd.mac``` -> measurements from October 2021 to February 2022 of the X-ARAPUCA DUNE HD (to be run as option1)
@@ -105,10 +109,11 @@ You can also find some of the geometries used in the IR02 setups:
 * ```cajita_xa-sbnd.json``` -> measurements from Febreuary 2023 to April 2023 of the X-ARAPUCA SBND (to be run as option3). 
     There are two types of files for production (*_prod) and for visualization. 
     Moreover there were two measurements to be made with visible ligth (VIS) and with alpha source (VUV)
-* ```megacell.json``` -> measurements from August 2023 to * of the MeggaCell DUNE-VD (to be run as option3).
+* ```megacell_v1.json``` -> measurements of August 2023 of the MeggaCell DUNE-VD (to be run as option3).
+* ```megacell_v2.json``` -> measurements from October 2023 of the MeggaCell DUNE-VD (nueva cajita; to be run as option3)
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
-### 4.- ANALYSIS: JUPYTER NOTEBOOKS
+### 🪄 4. ANALYSIS: JUPYTER NOTEBOOKS
 
 In the analysis folder you can find some notebooks to analyse the output of the simulation.
 
