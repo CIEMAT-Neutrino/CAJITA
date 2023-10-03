@@ -53,11 +53,21 @@ We want to show Scintillation LAr light (see https://apc.u-paris.fr/~franco/g4do
 
 Once you have cloned the repository, you can setup the enviroment with the following commands:
 ```console
-source setup.sh
-./run_build.sh
+source scripts/setup.sh
+./scripts/run_build.sh
 ```
 
 Before the compilation occurs you will need to choose a geometry to be used among the displayed options. Then you can run the code.
+
+![setup](https://github.com/CIEMAT-Neutrino/SIM_LAB_GEANT4/assets/80100549/83ecf83e-d368-4be5-b1f2-98375f88d920)
+![compilation](https://github.com/CIEMAT-Neutrino/SIM_LAB_GEANT4/assets/80100549/89fbd956-3177-4630-9296-3bafe01e99c6)
+![success](https://github.com/CIEMAT-Neutrino/SIM_LAB_GEANT4/assets/80100549/5eb0b15b-0b8e-4fc3-ac29-aef5298a0816)
+
+
+⚠️ WARNINGS ⚠️ 
+* You will need the library **Motif** for a successful compilation (ask ae_support to install it in you local pcae if you need it)
+* *run_build.sh* script only runs from main folder (it will ask for your confirmation to continue with the process)
+* You need to choose a geometry (*geometries* and *configs* folders 📂) for the compilation. Each change need to be recompiled !!
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -80,7 +90,10 @@ Therer are three options of configuring the geometry that can be run as:
 ./build/box1 configs/option3.json data/output.root
 ```
 
-Note: each time you change the geometry you need to recompile the code. Probably the simulation output is big so if you need to run several simulation for optimize the setup it is better to allocate the output in a different folder (i.e. in ```/pc/choozdsk01/palomare/GEANT4``` or ```/pnfs/ciemat.es/neutrinos/```  where you can make your own folder ).
+![run_option3](https://github.com/CIEMAT-Neutrino/SIM_LAB_GEANT4/assets/80100549/47a9cddc-dc6e-43fb-b0b5-92d9071cc077)
+![output_option3](https://github.com/CIEMAT-Neutrino/SIM_LAB_GEANT4/assets/80100549/0c6a1eab-9b91-479d-8438-5bf29c3d454d)
+
+🗒️ Note: each time you change the geometry you need to recompile the code. Probably the simulation output is big so if you need to run several simulation for optimize the setup it is better to allocate the output in a different folder (i.e. in ```/pc/choozdsk01/palomare/GEANT4``` or ```/pnfs/ciemat.es/neutrinos/```  where you can make your own folder ).
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
