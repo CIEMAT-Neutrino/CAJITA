@@ -98,6 +98,7 @@ Therer are three options of configuring the geometry that can be run as:
 ![output_option3](https://github.com/CIEMAT-Neutrino/SIM_LAB_GEANT4/assets/80100549/0c6a1eab-9b91-479d-8438-5bf29c3d454d)
 
 🗒️ Note: each time you change the geometry you need to recompile the code. Probably the simulation output is big so if you need to run several simulation for optimize the setup it is better to allocate the output in a different folder (i.e. in ```/pc/choozdsk01/palomare/GEANT4``` or ```/pnfs/ciemat.es/neutrinos/```  where you can make your own folder ).
+Moreover if you need to define a geometry based on different simulations you can check production folder with examples on how to change some parameters with different ```*.json``` without compilation and run at the same time with the ```production/production.sh``` script.
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
