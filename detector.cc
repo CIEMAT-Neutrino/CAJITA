@@ -70,40 +70,48 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
     G4AnalysisManager *man = G4AnalysisManager::Instance();
 
     bool save_all = true;
+    bool DEBUG    = true;
+
     if (save_all)
     {
+        //------ INFO PER HIT ------//    
+        std::cout << "SAVING MODE **ALL** (detector.cc and recompile to change)" << std::endl;
+        // Get sensor name as number
+        double sensor=999;
+        if      (sensor_name=="physSC")    { sensor=0;}
+        else if (sensor_name=="physSiPM1") { sensor=1;}
+        else if (sensor_name=="physSiPM2") { sensor=2;}
+        else if (sensor_name=="physPMT")   { sensor=3;}
+
+        man->FillNtupleIColumn(0, 0, evt); //event number vs entries (statistical fluctuation same ph hit)
+        man->FillNtupleDColumn(0, 1, posPhoton[0]);
+        man->FillNtupleDColumn(0, 2, posPhoton[1]);
+        man->FillNtupleDColumn(0, 3, posPhoton[2]);
+        man->FillNtupleDColumn(0, 4, time);
+        man->FillNtupleDColumn(0, 5, wlen);
+        man->FillNtupleDColumn(0, 6, momPhoton.getPhi());
+        man->FillNtupleDColumn(0, 7, momPhoton.getTheta());
+        man->FillNtupleDColumn(0, 8, sensor);
+        man->AddNtupleRow(0);
+
         ++acum_hits; //+1 hit in this sensor
         if (prevEvent!=evt)
         {
-            //------ INFO PER HIT ------//    
-            std::cout << "SAVING MODE **ALL** (detector.cc and recompile to change)" << std::endl;
-            // Get sensor name as number
-            double sensor=999;
-            if      (sensor_name=="physSC")    { sensor=0;}
-            else if (sensor_name=="physSiPM1") { sensor=1;}
-            else if (sensor_name=="physSiPM2") { sensor=2;}
-            else if (sensor_name=="physPMT")   { sensor=3;}
-
-            man->FillNtupleIColumn(0, 0, evt); //event number vs entries (statistical fluctuation same ph hit)
-            man->FillNtupleDColumn(0, 1, posPhoton[0]);
-            man->FillNtupleDColumn(0, 2, posPhoton[1]);
-            man->FillNtupleDColumn(0, 3, posPhoton[2]);
-            man->FillNtupleDColumn(0, 4, time);
-            man->FillNtupleDColumn(0, 5, wlen);
-            man->FillNtupleDColumn(0, 6, momPhoton.getPhi());
-            man->FillNtupleDColumn(0, 7, momPhoton.getTheta());
-            man->AddNtupleRow(0);
-
+            if (DEBUG) {std::cout << "Event: " << evt << " of " << Nevts << "; prevEvent: " << prevEvent << "; acum_hits: " << acum_hits << " ;sensor:"<<sensor << std::endl;}
             // >> Without Quantum Efficiency:
             man->FillNtupleIColumn(1, 0, evt);
+            // man->FillNtupleDColumn(1, 1, posPhoton[0]);
+            // man->FillNtupleDColumn(1, 2, posPhoton[1]);
+            // man->FillNtupleDColumn(1, 3, posPhoton[2]);
             man->FillNtupleDColumn(1, 4, sensor);
             man->FillNtupleDColumn(1, 5, acum_hits);
-            man->AddNtupleRow(1);
+            man->AddNtupleRow(1); // run.cc names of columns defined
 
             //set event container to this event, reset acum_hits to 1
             prevEvent=evt;
             acum_hits=1;
-
+            if (DEBUG) {std::cout << "Event: " << evt << " of " << Nevts << "; currentEvent: " << prevEvent << "; acum_hits: " << acum_hits << " ;sensor:"<<sensor << std::endl;}
+        }
             // if(G4UniformRand() < quEff->Value(wlen))
             // {
             //     man->FillNtupleIColumn(1, 0, evt);
@@ -112,7 +120,6 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
             //     man->FillNtupleDColumn(1, 3, posDetector[2]);
             //     man->AddNtupleRow(1);
             // }
-        }
     } // saving mode all
     else
     {
@@ -128,11 +135,12 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
             else if (sensor_name=="physSiPM2") {sensor=2;}
             else if (sensor_name=="physPMT")   {sensor=3;}
 
-            bool DEBUG=false;
             if (DEBUG) {std::cout << "Event: " << evt << " of " << Nevts << "; prevEvent: " << prevEvent << "; acum_hits: " << acum_hits << " ;sensor:"<<sensor << std::endl;}
-
             //Save the info per event (last event won't be processed)
             man->FillNtupleIColumn(1, 0, evt);
+            // man->FillNtupleDColumn(1, 1, posPhoton[0]);
+            // man->FillNtupleDColumn(1, 2, posPhoton[1]);
+            // man->FillNtupleDColumn(1, 3, posPhoton[2]);
             man->FillNtupleDColumn(1, 4, sensor);
             man->FillNtupleDColumn(1, 5, acum_hits);
             man->AddNtupleRow(1);

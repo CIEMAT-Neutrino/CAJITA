@@ -7,22 +7,24 @@ MyRunAction::MyRunAction(G4String output_Name="None")
     G4AnalysisManager *man = G4AnalysisManager::Instance();
 
     man->CreateNtuple("Photons", "Photons");
-    man->CreateNtupleIColumn("fEvent");
-    man->CreateNtupleDColumn("fX");
-    man->CreateNtupleDColumn("fY");
-    man->CreateNtupleDColumn("fZ");
-    man->CreateNtupleDColumn("fT");
-    man->CreateNtupleDColumn("fWlen");
-    man->CreateNtupleDColumn("fPhi");
-    man->CreateNtupleDColumn("fTheta");
+    man->CreateNtupleIColumn("Event");
+    man->CreateNtupleDColumn("X");
+    man->CreateNtupleDColumn("Y");
+    man->CreateNtupleDColumn("Z");
+    man->CreateNtupleDColumn("T");
+    man->CreateNtupleDColumn("Wlen");
+    man->CreateNtupleDColumn("Phi");
+    man->CreateNtupleDColumn("Theta");
+    man->CreateNtupleDColumn("Sensor");
     man->FinishNtuple(0);
 
     man->CreateNtuple("Hits", "Hits");
-    man->CreateNtupleIColumn("fEvent");
-    man->CreateNtupleDColumn("fX"); //column of doubles
-    man->CreateNtupleDColumn("fY");
-    man->CreateNtupleDColumn("fZ");
-    man->CreateNtupleDColumn("fsensor");  //0 arapuca, 1/2 SiPM
+    man->CreateNtupleIColumn("Event");
+    man->CreateNtupleDColumn("X"); //column of doubles
+    man->CreateNtupleDColumn("Y");
+    man->CreateNtupleDColumn("Z");
+    man->CreateNtupleDColumn("Sensor");
+    man->CreateNtupleDColumn("AccumHits");  //0 arapuca, 1/2 SiPM
     man->FinishNtuple(1); 
     
     // man->CreateNtuple("Scoring", "Scoring");
