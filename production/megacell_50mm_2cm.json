@@ -30,6 +30,7 @@
   "/vis/enable",
   "/vis/viewer/rebuild",
   "/vis/viewer/set/background grey",
+  "/vis/scene/add/axes 0 10 10 10 cm",
   "/vis/scene/endOfEventAction accumulate 10"
 ],
 
@@ -55,8 +56,8 @@
 
 "rebaba_sipms":
 {
-  "dim": [16.188, 10, 71.875],
-  "x":   [54.975, 95.15, 0],
+  "dim": [21.188, 10, 71.875],
+  "x":   [49.975, 95.15, 0],
   "rot": [0.0 , 0.0 , 0.0]
 }
 

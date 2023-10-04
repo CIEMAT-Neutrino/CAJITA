@@ -107,7 +107,7 @@ void MyDetectorConstruction::ConstructScintillator()
     // ---- Cajita (hueca) ----- //
     // >> Cajita Exterior (+grande, plastico)
     // auto outerBox = new G4Box("solidCajitaOut1", 88.375 * mm, 25   * mm, 78.375 * mm);
-    auto outerBox = new G4Box("solidCajitaOut1", 78.375 * mm, 53.325   * mm, 78.375 * mm);
+    auto outerBox = new G4Box("solidCajitaOut1", 78.375 * mm, 53.325 * mm, 78.375 * mm);
     auto innerBox = new G4Box("solidCajitaOut2", 71.875 * mm, 52.325 * mm, 71.875 * mm);
     // auto innerBox = new G4Box("solidCajitaOut2", 81.875 * mm, 24.5 * mm, 71.875 * mm);
     G4SubtractionSolid *solidCajitaOut = new G4SubtractionSolid("solidCajitaOut",outerBox,innerBox);
