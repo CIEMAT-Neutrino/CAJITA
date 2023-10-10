@@ -69,13 +69,13 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
     // Fill the Ntuple defined in run.cc and run.hh with the hits registered (photon info)
     G4AnalysisManager *man = G4AnalysisManager::Instance();
 
-    bool save_all = true;
-    bool DEBUG    = true;
+    bool save_all = false;
+    bool DEBUG    = false;
 
     if (save_all)
     {
         //------ INFO PER HIT ------//    
-        std::cout << "SAVING MODE **ALL** (detector.cc and recompile to change)" << std::endl;
+        if (DEBUG) {std::cout << "SAVING MODE **ALL** (detector.cc and recompile to change)" << std::endl;}
         // Get sensor name as number
         double sensor=999;
         if      (sensor_name=="physSC")    { sensor=0;}
@@ -124,7 +124,7 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
     else
     {
         //------ ACUMULATED HITS INFO STORED (save space when lots of events) ------//   
-        std::cout << "SAVING MODE **FAST** (detector.cc and recompile to change)" << std::endl;
+        if (DEBUG) {std::cout << "SAVING MODE **FAST** (detector.cc and recompile to change)" << std::endl;}
         ++acum_hits; //+1 hit in this sensor
         if (prevEvent!=evt)
         {
