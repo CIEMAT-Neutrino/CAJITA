@@ -118,8 +118,14 @@ You can also find some of the geometries used in the IR02 setups:
 
 In the analysis folder you can find some notebooks to analyse the output of the simulation.
 
-* Analitical computations -> expected shapes of the distributions for the different detectors
+* Analitical computations -> expected shapes of the distributions for the different detectors (first two types of plots only available if ```save_all = true``` in ```detector.cc```; third one is based on the ```accum_hits``` variable which is what you need to see the expected number of photons in your sensor)
 * Simulation outputs -> PDE, #PE, angular distribution, etc.
+
+If you have chosen to run the simulation with the multithreading option you will have different files you may need to combine before looking at the results. Check this command 😉:
+```console
+hadd -k COMBINED_ALL_OUTPUTS.root COMMOM_NAME_t*
+```
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Visualizing in ROOT
