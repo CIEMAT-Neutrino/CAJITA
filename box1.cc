@@ -20,7 +20,7 @@
 int main(int argc, char **argv)
 {
     G4UIExecutive *ui = 0;
-    G4RunManager *runManager = new G4RunManager();
+    G4MTRunManager *runManager = new G4MTRunManager();
 
     G4String second_arg = "none";
     G4String third_arg  = "none";
