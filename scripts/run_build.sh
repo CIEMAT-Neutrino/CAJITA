@@ -12,12 +12,12 @@ then
 fi
 
 # Create build and data(output) directory if not present
-if [ ! -d "../build" ]; then
-    mkdir ../build
+if [ ! -d "build/" ]; then
+    mkdir build/
 fi
 
-if [ ! -d "../data" ]; then
-    mkdir ../data
+if [ ! -d "data/" ]; then
+    mkdir data/
 fi
 
 # Remove contents of build folder if any
