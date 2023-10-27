@@ -1,4 +1,4 @@
-import uproot
+import uproot,os,sys
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -75,6 +75,8 @@ def plot_variable_distributions(my_data,variable,stats=(False,False),bins=100,pr
         plt.legend()
         plt.grid()
         # Save figure
+        # Check if folder exists
+        if not os.path.isdir("../results/"): os.mkdir("../results/")
         if save: plt.savefig("../results/"+my_file.split('.root')[0]+'_'+variable+".png")
     return fig
 
