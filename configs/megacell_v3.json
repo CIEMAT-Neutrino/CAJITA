@@ -1,0 +1,65 @@
+{
+"comments":"Position units given in mm",
+
+"display": true,
+"G4_beam_settings": 
+[
+  "/gps/particle opticalphoton",
+  "/gps/ene/type Mono",
+  "/gps/ene/mono 9.7 eV",
+  "/gps/pos/type Plane",
+  "/gps/pos/shape Circle",
+  "/gps/pos/radius  11 mm",
+  "/gps/pos/rot1 1 0 0",
+  "/gps/pos/rot2 0 0 1 ",
+  "/gps/pos/centre 0 69.58 0 mm",
+  "/gps/direction 0 -1 0",
+  "/gps/ang/type iso",
+  "/gps/number 100",
+  "/run/beamOn 2",
+  "/run/initialize"
+],
+
+"G4_vis_settings":
+[
+  "/vis/viewer/set/autorefresh/true",
+  "/vis/open OGL",
+  "/vis/drawVolume",
+  "/vis/scene/add/trajectories smooth",
+  "/vis/scene/add/eventID",
+  "/vis/enable",
+  "/vis/viewer/rebuild",
+  "/vis/viewer/set/background grey",
+  "/vis/scene/endOfEventAction accumulate 10",
+  "/vis/scene/add/axes"
+],
+
+"sensors_keys": 
+[
+  "XArapuca",
+  "SiPM1",
+  "SiPM2"
+],
+
+"source": 
+{
+  "X": 0,
+  "Y": 0,
+  "Z": 0
+},
+
+"SiPM1":      {    "X": [ 28.54, 66.58, 0]  },
+"SiPM2":      {    "X": [-28.54, 66.58, 0]  },
+"SiPM1_tapa": {    "X": [ 28.54, 66.58, 1]  },
+"SiPM2_tapa": {    "X": [-28.54, 66.58, 1]  },
+"SiPM_rot": [0.0 , 0.0 , 0.0],
+
+"rebaba_sipms":
+{
+  "dim_use": ["x","y","z"],
+  "dim": [34.3,15.215,34.3],
+  "x":   [0.0, 58.45, 0.0],
+  "rot": [0.0 , 0.0 , 0.0]
+}
+
+}

@@ -70,8 +70,8 @@ Before the compilation occurs you will need to choose a geometry to be used amon
 * You need to choose a geometry (*geometries* and *configs* folders 📂) for the compilation. Each change need to be recompiled !!
 
 🆕 Once you have clearly chosen your geometry you can compile with ```./scripts/run_build.sh geometry``` to avoid the second question of the script.
+![build](https://github.com/CIEMAT-Neutrino/SIM_LAB_GEANT4/assets/80100549/b5648858-3a74-4393-bf29-8cd26bd02b36)
 
-![Alt text](build_argument.png)
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -80,6 +80,7 @@ Before the compilation occurs you will need to choose a geometry to be used amon
 Therer are three options of configuring the geometry that can be run as:
 
 * option1: no json. Source information in the .mac. Compile to update changes in construction.
+
 ```console
 ./build/box1 configs/option1.mac data/output.root
 ```
