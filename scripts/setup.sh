@@ -1,7 +1,5 @@
 #!/bin/bash
 
-git config --local include.path ../.gitconfig
-
 # Print a warning in red color to only run this script from inside the scripts directory
 echo -e "\e[31mWARNING: Only run this script from main directory!\e[0m"
 # Ask if sure to continue
