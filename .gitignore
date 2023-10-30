@@ -1,3 +1,5 @@
 build/*
 data/*
+scratch/*
 *.root
+*.ipynb_checkpoints/
