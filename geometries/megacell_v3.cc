@@ -116,104 +116,73 @@ void MyDetectorConstruction::ConstructScintillator()
     auto innerBox = new G4Box("solidCajitaOut2", inner_dim[0]  * mm, inner_dim[1]  * mm, inner_dim[2]  * mm);
     G4SubtractionSolid *solidCajitaOut = new G4SubtractionSolid("solidCajitaOut",outerBox,innerBox);
     G4LogicalVolume *logicCajitaOut = new G4LogicalVolume(solidCajitaOut, Plastic, "logicCajitaOut");
-    // physCajitaOut  = new G4PVPlacement(0, G4ThreeVector(10 * mm, 25 * mm, 0 * mm), logicCajitaOut, "physCajitaOut", logicWorld, false, 1, true);
     G4VPhysicalVolume *physCajitaOut  = new G4PVPlacement(0, G4ThreeVector(0 * mm, inner_dim[1] * mm, 0 * mm), logicCajitaOut, "physCajitaOut", logicWorld, false, 1, true);
     logicCajitaOut->SetVisAttributes(logicSolidVisAtt); // solid+grey
 
-    // ---- Support ----- //
-    std::vector<double> support_dim, support_angle, support_x;
-    for (double coord:fjson.json_map["alpha_support1"]["dim"]) support_dim.push_back(coord);
-    for (double coord:fjson.json_map["alpha_support1"]["angle"]) support_angle.push_back(coord);
-    for (double coord:fjson.json_map["alpha_support1"]["x"]) support_x.push_back(coord);
-    G4Tubs *solidFalphaOut = new G4Tubs("solidFalphaOut", support_dim[0] * mm, support_dim[1] * mm, support_dim[2] * mm, support_angle[0]*deg, support_angle[1]*deg); //rebaba
-    G4LogicalVolume   *logicFalphaOut = new G4LogicalVolume(solidFalphaOut, Metal, "logicFalphaOut");
-    G4VPhysicalVolume *physFalphaOut  = new G4PVPlacement(pRotX, G4ThreeVector(support_x[0] * mm, 2*(inner_dim[1]-support_dim[2]) * mm, support_x[2] * mm), logicFalphaOut,  "physFalphaOut", logicWorld, false, 0, 1);
-    // Rotate the second support to be in the opposite side
-    G4RotationMatrix *pRotX2 = new G4RotationMatrix();
-    pRotX2->rotateX(270. * deg);
-    G4VPhysicalVolume *physFalphaOut2 = new G4PVPlacement(pRotX2, G4ThreeVector(support_x[0] * mm, 2*(inner_dim[1]-support_dim[2]) * mm, -support_x[2] * mm), logicFalphaOut, "physFalphaOut2", logicWorld, false, 0, 1);
-    logicFalphaOut->SetVisAttributes(logicTestVisAtt);
-
     // --- SC --- //
-    G4Box *solidSC = new G4Box("solidSC", 71.875 * mm, 0.01 * mm, 71.875 * mm); //--<<-- 1 filtro de VD X-ARAPUCA
+    std::vector<double> SC_dim, SC_pos, SC_rot;
+    for (double coord:fjson.json_map["arapuca"]["dim"]) SC_dim.push_back(coord);
+    for (double coord:fjson.json_map["arapuca"]["pos"]) SC_pos.push_back(coord);
+    for (double coord:fjson.json_map["arapuca"]["rot"]) SC_rot.push_back(coord);
+    G4Box *solidSC = new G4Box("solidSC", SC_dim[0] * mm, SC_dim[1] * mm, SC_dim[2] * mm); //--<<-- 1 filtro de VD X-ARAPUCA
     logicSC = new G4LogicalVolume(solidSC, LAr, "logicSC");                     //--<<--
     logicSC->SetVisAttributes(logicSCVisAtt);
+    G4VPhysicalVolume *physSC = new G4PVPlacement(0, G4ThreeVector(0 * mm,  SC_pos[1]* mm, 0 * mm), logicSC, "physSC", logicWorld, false, 1, true);
 
     // --- SiPM x2 --- //
-    G4Box *solidSiPM = new G4Box("solidSiPM", 0.5 * mm, 3 * mm, 3 * mm);
+    std::vector<double> SiPM_dim, SiPM1_x ,SiPM2_x ,SiPM1_x_tapa ,SiPM2_x_tapa,SiPM_rot;
+    for (double coord:fjson.json_map["sipms"]["dim"])  SiPM_dim.push_back(coord);
+    for (double coord:fjson.json_map["sipms"]["pos1"]) SiPM1_x.push_back(coord);
+    for (double coord:fjson.json_map["sipms"]["pos2"]) SiPM2_x.push_back(coord);
+    for (double coord:fjson.json_map["sipms"]["rot"])  SiPM_rot.push_back(coord);
+    G4Box *solidSiPM = new G4Box("solidSiPM", SiPM_dim[0] * mm, SiPM_dim[1] * mm, SiPM_dim[2] * mm);
     logicSiPM1 = new G4LogicalVolume(solidSiPM, LAr, "logicSiPM1");
     logicSiPM1->SetVisAttributes(logicDetectorVisAtt);
     logicSiPM2 = new G4LogicalVolume(solidSiPM, LAr, "logicSiPM2");
     logicSiPM2->SetVisAttributes(logicDetectorVisAtt);
-
-    // --- Tapas --- //
-    G4Box *solidSiPM_tapa = new G4Box("solidSiPM_tapa", 0.5 * mm, 3 * mm, 3 * mm);
-    G4LogicalVolume *logicSiPM1_tapa = new G4LogicalVolume(solidSiPM_tapa, Metal, "logicSiPM1_tapa");
-    G4LogicalVolume *logicSiPM2_tapa = new G4LogicalVolume(solidSiPM_tapa, Metal, "logicSiPM2_tapa");
-    logicSiPM1_tapa->SetVisAttributes(logicSolidVisAtt);
-    logicSiPM2_tapa->SetVisAttributes(logicSolidVisAtt);
-
-    if (check_is_file_type(fjsonName) && check_json_file(fjsonName))
-    { // load geometry from the json file instead:
-        std::vector<double> SiPM1_x ,SiPM2_x ,SiPM1_x_tapa ,SiPM2_x_tapa,SiPM_rot;
-
-        for (double coord:fjson.json_map["SiPM1"]["X"]) SiPM1_x.push_back(coord);
-        for (double coord:fjson.json_map["SiPM2"]["X"]) SiPM2_x.push_back(coord);
-        for (double coord:fjson.json_map["SiPM1_tapa"]["X"]) SiPM1_x_tapa.push_back(coord);
-        for (double coord:fjson.json_map["SiPM2_tapa"]["X"]) SiPM2_x_tapa.push_back(coord);
-        for (double coord:fjson.json_map["SiPM_rot"]) SiPM_rot.push_back(coord);
-        
-        G4RotationMatrix *R_SiPM1 = new G4RotationMatrix();
-        G4RotationMatrix *R_SiPM2 = new G4RotationMatrix();
-        
-        R_SiPM1->rotateX( SiPM_rot[0]*deg);
-        R_SiPM1->rotateY( SiPM_rot[1]*deg);
-        R_SiPM1->rotateZ( SiPM_rot[2]*deg);
-
-        R_SiPM2->rotateX(-SiPM_rot[0]*deg);
-        R_SiPM2->rotateY(-SiPM_rot[1]*deg);
-        R_SiPM2->rotateZ(-SiPM_rot[2]*deg);
-        
-        G4VPhysicalVolume *physSiPM1      = new G4PVPlacement(R_SiPM1, G4ThreeVector(     SiPM1_x[0] * mm,      SiPM1_x[1] * mm,      SiPM1_x[2] * mm), logicSiPM1,      "physSiPM1",      logicWorld, false, 1, true);
-        G4VPhysicalVolume *physSiPM1_tapa = new G4PVPlacement(R_SiPM1, G4ThreeVector(SiPM1_x_tapa[0] * mm, SiPM1_x_tapa[1] * mm, SiPM1_x_tapa[2] * mm), logicSiPM1_tapa, "physSiPM1_tapa", logicWorld, false, 1, true);
-
-        G4VPhysicalVolume *physSiPM2      = new G4PVPlacement(R_SiPM2, G4ThreeVector(     SiPM2_x[0] * mm,      SiPM2_x[1] * mm,      SiPM2_x[2] * mm), logicSiPM2,      "physSiPM2",      logicWorld, false, 1, true);
-        G4VPhysicalVolume *physSiPM2_tapa = new G4PVPlacement(R_SiPM2, G4ThreeVector(SiPM2_x_tapa[0] * mm, SiPM2_x_tapa[1] * mm, SiPM2_x_tapa[2] * mm), logicSiPM2_tapa, "physSiPM2_tapa", logicWorld, false, 1, true);
-        
-            if(fjson.json_map.contains("rebaba_sipms"))
-            {
-                std::cout<<"---------------- INSERTING SIPMs' REBABA ----------------"<<std::endl;
-                // --- Rebaba para acercar los SiPMs a la fuente (Geo1_ancho) --- //
-                std::vector<double> rebaba_dim;
-                for (double coord:fjson.json_map["rebaba_sipms"]["dim"]) rebaba_dim.push_back(coord);
-
-                auto outerRebaba = new G4Box("solidRebabaOut1", outter_dim[0] * mm, rebaba_dim[1] * mm, outter_dim[2] * mm);
-                auto innerRebaba = new G4Box("solidRebabaOut2", (SiPM1_x[0]+0.5) * mm, rebaba_dim[1] * mm, (SiPM1_x[0]+0.5) * mm);
-                G4SubtractionSolid *solidRebabaOut = new G4SubtractionSolid("solidRebabaOut",outerRebaba,innerRebaba);
-                G4LogicalVolume *logicRebabaOut = new G4LogicalVolume(solidRebabaOut, Plastic, "logicRebabaOut");
-                G4VPhysicalVolume *physRebabaOut  = new G4PVPlacement(0, G4ThreeVector(0 * mm, 58.45 * mm, 0 * mm), logicRebabaOut, "physRebabaOut", logicWorld, false, 1, true);
-                logicRebabaOut->SetVisAttributes(logicSolidVisAtt); // blue
-            }
-            if(fjson.json_map.contains("XArapuca"))
-            {
-                std::vector<double> XA;
-                for (double coord:fjson.json_map["XArapuca"]["X"]) XA.push_back(coord);
-                std::cout<<"---------------- XArapuca position entered in json ----------------"<<std::endl;
-                G4VPhysicalVolume *physSC = new G4PVPlacement(0, G4ThreeVector(XA[0] * mm, XA[1] * mm, XA[2] * mm), logicSC, "physSC", logicWorld, false, 1, true);
-            }
-            else
-            {
-                std::cout<<"---------------- XArapuca default position ----------------"<<std::endl;
-                G4VPhysicalVolume *physSC = new G4PVPlacement(0, G4ThreeVector(0 * mm, 0.5 * mm, 0 * mm), logicSC, "physSC", logicWorld, false, 1, true);
-            }
-    }
     
-    else
-    {
-        G4VPhysicalVolume *physSC    = new G4PVPlacement(0, G4ThreeVector(       0 * mm,   0.5 * mm, 0 * mm), logicSC,    "physSC",    logicWorld, false, 1, true);
-        G4VPhysicalVolume *physSiPM2 = new G4PVPlacement(0, G4ThreeVector(  70.875 * mm, 99.15 * mm, 0 * mm), logicSiPM2, "physSiPM2", logicWorld, false, 1, true); 
-        G4VPhysicalVolume *physSiPM1 = new G4PVPlacement(0, G4ThreeVector( -70.875 * mm, 99.15 * mm, 0 * mm), logicSiPM1, "physSiPM1", logicWorld, false, 1, true); 
-    }   
+    G4RotationMatrix *R_SiPM1 = new G4RotationMatrix();
+    G4RotationMatrix *R_SiPM2 = new G4RotationMatrix();
+    
+    R_SiPM1->rotateX( SiPM_rot[0]*deg);
+    R_SiPM1->rotateY( SiPM_rot[1]*deg);
+    R_SiPM1->rotateZ( SiPM_rot[2]*deg);
+
+    R_SiPM2->rotateX(-SiPM_rot[0]*deg);
+    R_SiPM2->rotateY(-SiPM_rot[1]*deg);
+    R_SiPM2->rotateZ(-SiPM_rot[2]*deg);
+    
+    G4VPhysicalVolume *physSiPM1 = new G4PVPlacement(R_SiPM1, G4ThreeVector( SiPM1_x[0] * mm, SiPM1_x[1] * mm, SiPM1_x[2] * mm), logicSiPM1, "physSiPM1", logicWorld, false, 1, true);
+    G4VPhysicalVolume *physSiPM2 = new G4PVPlacement(R_SiPM2, G4ThreeVector( SiPM2_x[0] * mm, SiPM2_x[1] * mm, SiPM2_x[2] * mm), logicSiPM2, "physSiPM2", logicWorld, false, 1, true);
+    
+    // Insert optional components:
+    if(fjson.json_map.contains("rebaba_sipms")){
+        std::cout<<"---------------- INSERTING SIPMs' REBABA ----------------"<<std::endl;
+        std::vector<double> rebaba_dim;
+        for (double coord:fjson.json_map["rebaba_sipms"]["dim"]) rebaba_dim.push_back(coord);
+
+        auto outerRebaba = new G4Box("solidRebabaOut1", inner_dim[0] * mm, rebaba_dim[1] * mm, inner_dim[2] * mm);
+        auto innerRebaba = new G4Box("solidRebabaOut2", (SiPM1_x[0]+SiPM_dim[0]+1e-6) * mm, rebaba_dim[1] * mm, (SiPM1_x[0]+SiPM_dim[0]+1e-6) * mm);
+        G4SubtractionSolid *solidRebabaOut = new G4SubtractionSolid("solidRebabaOut",outerRebaba,innerRebaba);
+        G4LogicalVolume *logicRebabaOut = new G4LogicalVolume(solidRebabaOut, Plastic, "logicRebabaOut");
+        G4VPhysicalVolume *physRebabaOut  = new G4PVPlacement(0, G4ThreeVector(0 * mm, 2*inner_dim[1]-rebaba_dim[1] * mm, 0 * mm), logicRebabaOut, "physRebabaOut", logicWorld, false, 1, true);
+        logicRebabaOut->SetVisAttributes(logicSolidVisAtt); // blue
+    }
+    if(fjson.json_map.contains("alpha_support")){
+        std::cout<<"---------------- INSERTING ALPHA SUPPORT ----------------"<<std::endl;
+        std::vector<double> support_dim, support_angle, support_x;
+        for (double coord:fjson.json_map["alpha_support"]["dim"]) support_dim.push_back(coord);
+        for (double coord:fjson.json_map["alpha_support"]["angle"]) support_angle.push_back(coord);
+        for (double coord:fjson.json_map["alpha_support"]["pos"]) support_x.push_back(coord);
+        G4Tubs *solidFalphaOut = new G4Tubs("solidFalphaOut", support_dim[0] * mm, support_dim[1] * mm, support_dim[2] * mm, support_angle[0]*deg, support_angle[1]*deg); //rebaba
+        G4LogicalVolume   *logicFalphaOut = new G4LogicalVolume(solidFalphaOut, Metal, "logicFalphaOut");
+        G4VPhysicalVolume *physFalphaOut  = new G4PVPlacement(pRotX, G4ThreeVector(support_x[0] * mm, 2*(inner_dim[1]-support_dim[2]) * mm, support_x[2] * mm), logicFalphaOut,  "physFalphaOut", logicWorld, false, 0, 1);
+        
+        G4RotationMatrix *pRotX2 = new G4RotationMatrix();
+        pRotX2->rotateX(270. * deg);
+        G4VPhysicalVolume *physFalphaOut2 = new G4PVPlacement(pRotX2, G4ThreeVector(support_x[0] * mm, 2*(inner_dim[1]-support_dim[2]) * mm, -support_x[2] * mm), logicFalphaOut, "physFalphaOut2", logicWorld, false, 0, 1);
+        logicFalphaOut->SetVisAttributes(logicTestVisAtt);
+    }
 }
 
 G4VPhysicalVolume *MyDetectorConstruction::Construct()

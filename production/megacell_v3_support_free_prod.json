@@ -70,22 +70,5 @@
     "pos1":[ 28.54, 66.58, 0],
     "pos2":[-28.54, 66.58, 0],
     "rot": [0.0 , 0.0 , 0.0]
-  },
-  
-  "rebaba_sipms":
-  {
-    "comment1": "X & Z coordinates constrained to SiPM1",
-    "dim":     [1e-6, 15.215,1e-6],
-    "comment2": "Position & rotation constrained by big_cajita"
-  },
-  
-  "alpha_support":
-  {
-    "dim":  [12.5,14.5,0.85],
-    "angle":[45,95],
-    "comment": "Y coordinate constrained to top of big_cajita",
-    "pos":    [0.0, 0.0, 0.0],
-    "rot":  [0.0, 0.0, 0.0]
   }
-  
 }
