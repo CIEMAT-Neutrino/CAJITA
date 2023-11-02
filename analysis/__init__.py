@@ -24,7 +24,7 @@ def compute_real_angles(my_data,sensors_info,debug=False):
             theta = my_data[geo_file][sensor]["Theta"]
             
             abs_vec = np.array([ np.sin(theta)*np.cos(phi), np.sin(theta)*np.sin(phi), np.cos(theta)])
-            norm    = np.sum(  (abs_vec.T*sensors_info[sensor][geo_file]),axis=1 )
+            norm    = np.sum((abs_vec.T*sensors_info[sensor][geo_file]), axis=1)
             inc_ang = np.arccos(norm)
             
             my_data[geo_file][sensor]["Vector"]  = abs_vec
