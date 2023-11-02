@@ -1,4 +1,5 @@
 build/*
 data/*
-*.root
 *.png
+*.root
+*.ipynb_checkpoints
