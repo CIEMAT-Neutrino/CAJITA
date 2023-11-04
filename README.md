@@ -1,7 +1,7 @@
-#  SIM_LAB_GEANT4
- 
+# SIM_LAB_GEANT4
 
-## SUMMARY 
+## SUMMARY
+
 This is a basic example for performing simulations in Geant4. The world volume is filled with LAr and we place different detectors
 that can be included with given positions in a .json or manually. The output is a .root file which contains (_Photon_) NTuple with the position (X,Y,Z) of the photon hit in your detector and the incidence angle (theta, phi).
 
@@ -10,27 +10,24 @@ Chronologically we have created the files as follows:
 
 1.- Detector construction (construction)
 
-
 2.- Physics included in the analysis (physics)
-
 
 3.- Particle gun in action (action)
 
-
 4.- Particle generator (generator)
-
 
 5.- Inserting sensitive detector (detector) and we add in construcction.cc the detectors' volumes
 
-
 6.- Store the information in a .root file (with Ntuples). Defined in ```run.cc``` and ```run.hh```. We can see the stored information:
+
 ```console
   >> root output.root
   >> new TBrowser()
   >> Hits->Draw("fX:fY", "", "colz") //to see the correlation
 ```
 
-7.- Automatizating the code 
+7.- Automatizating the code
+
 * ```vis.mac``` for visualization commands -> when creating vis.mac it is not in /build and it is not found, we move all the macro file 
   to the right directory without including absolute paths -> look in CMakeLists.txt
   
@@ -38,12 +35,11 @@ Chronologically we have created the files as follows:
 
 * `*.dat` -> store quantum/photon detection efficiencies for the different detectors.
 
-
-  8th: Analysing the Ntuple.root generated with the photons' hits. We create a notebook (Analysis.ipynb) for this purpose and to plot the distributions.
+8th: Analysing the Ntuple.root generated with the photons' hits. We create a notebook (Analysis.ipynb) for this purpose and to plot the distributions.
 
 We can send alpha particles (blue), electrons(red) and photons(green) are produced. 
 We would need to include the energy deposition calculation that can be also stored in the NTuple.
-We want to show Scintillation LAr light (see https://apc.u-paris.fr/~franco/g4doxy/html/classG4Scintillation.html)
+We want to show Scintillation LAr light (see [G4Scintillation](https://apc.u-paris.fr/~franco/g4doxy/html/classG4Scintillation.html))
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -52,6 +48,7 @@ We want to show Scintillation LAr light (see https://apc.u-paris.fr/~franco/g4do
 ### 🇬4️⃣ 1. SETUP AND COMPILATION
 
 Once you have cloned the repository, you can setup the enviroment with the following commands:
+
 ```console
 source scripts/setup.sh
 ./scripts/run_build.sh
@@ -63,15 +60,14 @@ Before the compilation occurs you will need to choose a geometry to be used amon
 ![compilation](https://github.com/CIEMAT-Neutrino/SIM_LAB_GEANT4/assets/80100549/89fbd956-3177-4630-9296-3bafe01e99c6)
 ![success](https://github.com/CIEMAT-Neutrino/SIM_LAB_GEANT4/assets/80100549/5eb0b15b-0b8e-4fc3-ac29-aef5298a0816)
 
+⚠️ WARNINGS ⚠️
 
-⚠️ WARNINGS ⚠️ 
 * You will need the library **Motif** for a successful compilation (ask ae_support to install it in you local pcae if you need it)
-* *run_build.sh* script only runs from main folder (it will ask for your confirmation to continue with the process)
-* You need to choose a geometry (*geometries* and *configs* folders 📂) for the compilation. Each change need to be recompiled !!
+* _run_build.sh_ script only runs from main folder (it will ask for your confirmation to continue with the process)
+* You need to choose a geometry (_geometries_ and _configs_ folders 📂) for the compilation. Each change need to be recompiled !!
 
 🆕 Once you have clearly chosen your geometry you can compile with ```./scripts/run_build.sh geometry``` to avoid the second question of the script.
 ![build](https://github.com/CIEMAT-Neutrino/SIM_LAB_GEANT4/assets/80100549/b5648858-3a74-4393-bf29-8cd26bd02b36)
-
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -86,11 +82,13 @@ Therer are three options of configuring the geometry that can be run as:
 ```
 
 * option2: fixed positions given in construcction.cc (sbnd_pds_mapping.json). Source information by .mac
+
 ```console
 ./build/box1 configs/option2.mac data/output.root
 ```
 
 * option3: json including positions for sensors + (.mac) information
+
 ```console
 ./build/box1 configs/option3.json data/output.root
 ```
@@ -104,6 +102,7 @@ Moreover if you need to define a geometry based on different simulations you can
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### 🧪 3. GEOMETRIES EXAMPLES
+
 You can also find some of the geometries used in the IR02 setups:
 
 * ```cajita_xa-hd.mac``` -> measurements from October 2021 to February 2022 of the X-ARAPUCA DUNE HD (to be run as option1)
@@ -115,6 +114,7 @@ You can also find some of the geometries used in the IR02 setups:
 * ```megacell_v2.json``` -> measurements from October 2023 of the MeggaCell DUNE-VD (nueva cajita; to be run as option3)
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### 🪄 4. ANALYSIS: JUPYTER NOTEBOOKS
 
 In the analysis folder you can find some notebooks to analyse the output of the simulation.
@@ -123,6 +123,7 @@ In the analysis folder you can find some notebooks to analyse the output of the 
 * Simulation outputs -> PDE, #PE, angular distribution, etc.
 
 If you have chosen to run the simulation with the multithreading option you will have different files you may need to combine before looking at the results. Check this command 😉:
+
 ```console
 hadd -k COMBINED_ALL_OUTPUTS.root COMMOM_NAME_t*
 ```
@@ -130,6 +131,7 @@ hadd -k COMBINED_ALL_OUTPUTS.root COMMOM_NAME_t*
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Visualizing in ROOT
+
 ```console
   >> root NTuple1.root
 
@@ -166,6 +168,7 @@ hadd -k COMBINED_ALL_OUTPUTS.root COMMOM_NAME_t*
 ```
 
 ## LICENSE
+
 [MIT](https://choosealicense.com/licenses/mit/)
 
 ## Authors (alphabetical order, please insert your name here if you contribute to this project)
