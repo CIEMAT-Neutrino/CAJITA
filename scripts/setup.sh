@@ -16,3 +16,9 @@ source /cvmfs/sft.cern.ch/lcg/views/LCG_100/x86_64-centos7-gcc8-opt/bin/geant4.s
 
 # Make directory for results
 mkdir -p results
+
+# Check if directory data exists
+if [ ! -d "data" ]; then
+    mkdir data
+    sshfs manthey@gaeuidc1.ciemat.es:/pc/choozdsk01/palomare/GEANT4/ data
+fi
