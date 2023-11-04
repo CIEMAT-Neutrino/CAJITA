@@ -80,17 +80,21 @@ def plot_variable_distributions(my_data,variable,stats=(False,False),bins=100,pr
         if save: plt.savefig("../results/"+my_file.split('.root')[0]+'_'+variable+".png")
     return fig
 
-def plot_photon_density(my_data,sensors_info,bins=100,density=False,dpi=50,debug=False):
-    axes   = ["X","Y","Z"]
-    labels = ["X axis", "Y axis", "Z axis"]
+def plot_photon_density(my_data,sensors_info,surface,bins=100,density=False,dpi=50,debug=False):
     fig, axs = plt.subplots(len(my_data),len(sensors_info.keys()),dpi=dpi,)
     for idx,my_file in enumerate(my_data):
         for jdx,sensor in enumerate(my_data[my_file]): 
-            axes2plot = list((np.abs(sensors_info[sensor][my_file])-1)*(-1))
-            axes2plot = np.where(np.array(axes2plot)==1)[0]
-            h = axs[jdx].hist2d(my_data[my_file][sensor][axes[axes2plot[0]]],my_data[my_file][sensor][axes[axes2plot[1]]],bins=bins,density=density)
-            axs[jdx].set_xlabel(labels[axes2plot[0]])
-            axs[jdx].set_ylabel(labels[axes2plot[1]])
+            try:
+                surface[sensor]
+            except KeyError:
+                print("ERROR: Sensor %s not found in surface dictionary"%sensor)
+                print("Available sensors are: %s"%surface.keys())
+                raise KeyError
+            x_axis = surface[sensor][0]
+            y_axis = surface[sensor][1]
+            h = axs[jdx].hist2d(my_data[my_file][sensor][x_axis],my_data[my_file][sensor][y_axis],bins=bins,density=density)
+            axs[jdx].set_xlabel(x_axis+" [mm]")
+            axs[jdx].set_ylabel(y_axis+" [mm]")
             if idx==0: axs[jdx].set_title(sensor)
     fig.colorbar(h[3], ax=axs.ravel().tolist())
     return fig  
