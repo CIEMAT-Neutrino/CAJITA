@@ -70,9 +70,10 @@
     "rot":        [0.0 , 0.0 , 0.0]
   },
   
-  "rebaba_sipms":{
+  "tower_sipms":{
     "comment1":   "X & Z coordinates constrained to SiPM1",
     "dim":        [1e-6, 15.215,1e-6],
+    "buffer":     [5.3],
     "comment2":   "Position & rotation constrained by big_cajita"
   },
 

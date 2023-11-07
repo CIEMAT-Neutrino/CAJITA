@@ -156,16 +156,16 @@ void MyDetectorConstruction::ConstructScintillator()
     G4VPhysicalVolume *physSiPM2 = new G4PVPlacement(R_SiPM2, G4ThreeVector( SiPM2_x[0] * mm, SiPM2_x[1] * mm, SiPM2_x[2] * mm), logicSiPM2, "physSiPM2", logicWorld, false, 1, true);
     
     // Insert optional components:
-    if(fjson.json_map.contains("rebaba_sipms")){
+    if(fjson.json_map.contains("tower_sipms")){
         std::cout<<"---------------- INSERTING SIPMs' REBABA ----------------"<<std::endl;
-        std::vector<double> rebaba_dim;
-        for (double coord:fjson.json_map["rebaba_sipms"]["dim"]) rebaba_dim.push_back(coord);
-
-        auto outerRebaba = new G4Box("solidRebabaOut1", inner_dim[0] * mm, rebaba_dim[1] * mm, inner_dim[2] * mm);
-        auto innerRebaba = new G4Box("solidRebabaOut2", (SiPM1_x[0]+SiPM_dim[0]+1e-6) * mm, rebaba_dim[1] * mm, (SiPM1_x[0]+SiPM_dim[0]+1e-6) * mm);
+        std::vector<double> tower_dim, tower_buffer;
+        for (double coord:fjson.json_map["tower_sipms"]["dim"]) tower_dim.push_back(coord);
+        for (double coord:fjson.json_map["tower_sipms"]["buffer"]) tower_buffer.push_back(coord);
+        auto outerRebaba = new G4Box("solidRebabaOut1", inner_dim[0] * mm, tower_dim[1] * mm, inner_dim[2] * mm);
+        auto innerRebaba = new G4Box("solidRebabaOut2", (SiPM1_x[0]+SiPM_dim[0]+tower_buffer[0]) * mm, tower_dim[1] * mm, (SiPM1_x[0]+SiPM_dim[0]+tower_buffer[0]) * mm);
         G4SubtractionSolid *solidRebabaOut = new G4SubtractionSolid("solidRebabaOut",outerRebaba,innerRebaba);
         G4LogicalVolume *logicRebabaOut = new G4LogicalVolume(solidRebabaOut, Plastic, "logicRebabaOut");
-        G4VPhysicalVolume *physRebabaOut  = new G4PVPlacement(0, G4ThreeVector(0 * mm, 2*inner_dim[1]-rebaba_dim[1] * mm, 0 * mm), logicRebabaOut, "physRebabaOut", logicWorld, false, 1, true);
+        G4VPhysicalVolume *physRebabaOut  = new G4PVPlacement(0, G4ThreeVector(0 * mm, 2*inner_dim[1]-tower_dim[1] * mm, 0 * mm), logicRebabaOut, "physRebabaOut", logicWorld, false, 1, true);
         logicRebabaOut->SetVisAttributes(logicSolidVisAtt); // blue
     }
     if(fjson.json_map.contains("alpha_support")){
@@ -174,7 +174,7 @@ void MyDetectorConstruction::ConstructScintillator()
         for (double coord:fjson.json_map["alpha_support"]["dim"]) support_dim.push_back(coord);
         for (double coord:fjson.json_map["alpha_support"]["angle"]) support_angle.push_back(coord);
         for (double coord:fjson.json_map["alpha_support"]["pos"]) support_x.push_back(coord);
-        G4Tubs *solidFalphaOut = new G4Tubs("solidFalphaOut", support_dim[0] * mm, support_dim[1] * mm, support_dim[2] * mm, support_angle[0]*deg, support_angle[1]*deg); //rebaba
+        G4Tubs *solidFalphaOut = new G4Tubs("solidFalphaOut", support_dim[0] * mm, support_dim[1] * mm, support_dim[2] * mm, support_angle[0]*deg, support_angle[1]*deg);
         G4LogicalVolume   *logicFalphaOut = new G4LogicalVolume(solidFalphaOut, Metal, "logicFalphaOut");
         G4VPhysicalVolume *physFalphaOut  = new G4PVPlacement(pRotX, G4ThreeVector(support_x[0] * mm, 2*(inner_dim[1]-support_dim[2]) * mm, support_x[2] * mm), logicFalphaOut,  "physFalphaOut", logicWorld, false, 0, 1);
         
