@@ -80,12 +80,12 @@ def plot_variable_distributions(my_data,variable,stats=(False,False),bins=100,pr
         if save: plt.savefig("../results/"+my_file.split('.root')[0]+'_'+variable+".png")
     return fig
 
-def plot_photon_density(my_data,sensors_info,surface,bins=100,density=False,dpi=50,debug=False):
-    fig, axs = plt.subplots(len(my_data),len(sensors_info.keys()),dpi=dpi,)
+def plot_photon_density(my_data, surface, bins=100, density=False, figsize=(None,None), dpi=50, save=False, debug=False):
+    fig, axs = plt.subplots(len(my_data),len(surface.keys()),dpi=dpi,)
     for idx,my_file in enumerate(my_data):
-        for jdx,sensor in enumerate(my_data[my_file]): 
+        for jdx,sensor in enumerate(surface.keys()): 
             try:
-                surface[sensor]
+                my_data[my_file][sensor]
             except KeyError:
                 print("ERROR: Sensor %s not found in surface dictionary"%sensor)
                 print("Available sensors are: %s"%surface.keys())
@@ -97,9 +97,13 @@ def plot_photon_density(my_data,sensors_info,surface,bins=100,density=False,dpi=
             axs[jdx].set_ylabel(y_axis+" [mm]")
             if idx==0: axs[jdx].set_title(sensor)
     fig.colorbar(h[3], ax=axs.ravel().tolist())
+    fig.set_figwidth(figsize[0])
+    fig.set_figheight(figsize[1])
+    if not os.path.isdir("../results/"): os.mkdir("../results/")
+    if save: plt.savefig("../results/"+my_file.split('.root')[0]+"_PhotonDensity.png")
     return fig  
 
-def plot_acumhits(my_data,dpi=50,bins=[100,35,35],semilogy=False,debug=False):
+def plot_acumhits(my_data, dpi=50, bins=[100,35,35], semilogy=False, debug=False):
     for my_file in my_data:
         means = [];sensors = []
         for s,sensor in enumerate(my_data[my_file]): mean = np.mean(my_data[my_file][sensor]["AccumHits"]); means.append(mean); sensors.append(sensor)
