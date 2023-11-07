@@ -52,32 +52,32 @@
   {
     "outter_dim": [67.0,37.425,67.0],
     "inner_dim":  [66.7,37.125,66.7],
-    "comment":   "Rotation and position should be left as they are",
+    "comment":    "Rotation and position should be left as they are",
     "rot":        [0.0, 0.0, 0.0]
   },
   
   "arapuca":
   {
-    "dim": [71.875, 1e-6, 71.875],
-    "pos": [0.0, 0.5, 0.0],
-    "comment": "Rotation should follow the same as big_cajita",
-    "rot": [0.0 , 0.0 , 0.0]
+    "dim":      [71.875, 1e-6, 71.875],
+    "pos":      [0.0, 0.5, 0.0],
+    "comment":  "Rotation should follow the same as big_cajita",
+    "rot":      [0.0 , 0.0 , 0.0]
   },
   
   "sipms":
   {
-    "dim": [1e-6, 3.0, 3.0],
-    "pos1":[ 28.54, 66.58, 0],
-    "pos2":[-28.54, 66.58, 0],
-    "rot": [0.0 , 0.0 , 0.0]
+    "dim":      [1e-6, 3.0, 3.0],
+    "pos1":     [ 28.54, 66.58, 0],
+    "pos2":     [-28.54, 66.58, 0],
+    "rot":      [0.0 , 0.0 , 0.0]
   },
 
   "alpha_support":
   {
-    "dim":  [12.5,14.5,0.85],
-    "angle":[45,95],
-    "comment": "Y coordinate constrained to top of big_cajita",
-    "pos":    [0.0, 0.0, 0.0],
-    "rot":  [0.0, 0.0, 0.0]
+    "dim":      [12.5,14.5,0.85],
+    "angle":    [45,95],
+    "comment":  "Y coordinate constrained to top of big_cajita",
+    "pos":      [0.0, 0.0, 0.0],
+    "rot":      [0.0, 0.0, 0.0]
   }
 }
