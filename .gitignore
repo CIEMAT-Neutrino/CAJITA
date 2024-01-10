@@ -1,5 +1,6 @@
 build/*
 data/*
+scratch/*
 *.png
 *.root
 *.ipynb_checkpoints
