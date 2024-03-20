@@ -173,6 +173,6 @@ hadd -k COMBINED_ALL_OUTPUTS.root COMMOM_NAME_t*
 
 ## Authors (alphabetical order, please insert your name here if you contribute to this project)
 
-* [**Alvárez-Garrote, Rodrigo**](https://github.com/LauPM)
-* [**Pérez-Molina, Laura**](https://github.com/rodralva)
+* [**Alvárez-Garrote, Rodrigo**](https://github.com/rodralva)
+* [**Pérez-Molina, Laura**](https://github.com/LauPM)
 * [**Manthey Corchado, Sergio**](https://github.com/mantheys)
