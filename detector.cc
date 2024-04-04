@@ -69,7 +69,7 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
     // Fill the Ntuple defined in run.cc and run.hh with the hits registered (photon info)
     G4AnalysisManager *man = G4AnalysisManager::Instance();
 
-    bool save_all = false;
+    bool save_all = true;
     bool DEBUG    = false;
 
     if (save_all)
