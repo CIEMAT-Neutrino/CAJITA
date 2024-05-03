@@ -16,7 +16,7 @@
     "/gps/direction 0 -1 0",
     "/gps/ang/type iso",
     "/gps/number 192000",
-    "/run/beamOn 100",
+    "/run/beamOn 10000",
     "/run/initialize"
   ],
 
@@ -74,7 +74,7 @@
   
   "tower_sipms":{
     "comment1":   "X & Z coordinates constrained to SiPM1",
-    "dim":        [1e-6, 15.215,1e-6],
+    "dim":        [1e-6, 9.215,1e-6],
     "buffer":     [5.3],
     "comment2":   "Position & rotation constrained by big_cajita"
   },

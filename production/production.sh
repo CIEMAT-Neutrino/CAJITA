@@ -13,12 +13,4 @@ then
     exit 1
 fi
 
-time ./build/box1 production/megacell_v1_104_prod.json /pc/choozdsk01/palomare/GEANT4/megacell_v1/megacell_104.root
-time ./build/box1 production/megacell_v1_74_prod.json /pc/choozdsk01/palomare/GEANT4/megacell_v1/megacell_74.root
-time ./build/box1 production/megacell_v1_54_prod.json /pc/choozdsk01/palomare/GEANT4/megacell_v1/megacell_54.root
-time ./build/box1 production/megacell_v1_24_prod.json /pc/choozdsk01/palomare/GEANT4/megacell_v1/megacell_24.root
-
-# time ./build/box1 production/megacell_40mm_1cm_prod.json /pc/choozdsk01/palomare/GEANT4/megacell_v2/megacell_40mm.root
-# time ./build/box1 production/megacell_40mm_prod.json /pc/choozdsk01/palomare/GEANT4/megacell_v2/megacell_40mm_1cm.root
-# time ./build/box1 production/megacell_45mm_prod.json /pc/choozdsk01/palomare/GEANT4/megacell_v2/megacell_45mm_1cm.root
-# time ./build/box1 production/megacell_50mm_prod.json /pc/choozdsk01/palomare/GEANT4/megacell_v2/megacell_50mm_1cm.root
+time ./build/box1 production/megacell_v3.json /pc/choozdsk01/DATA/GEANT4/megacell_v3/test.root
