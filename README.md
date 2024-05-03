@@ -112,6 +112,7 @@ You can also find some of the geometries used in the IR02 setups:
     Moreover there were two measurements to be made with visible ligth (VIS) and with alpha source (VUV)
 * ```megacell_v1.json``` -> measurements of August 2023 of the MeggaCell DUNE-VD (to be run as option3).
 * ```megacell_v2.json``` -> measurements from October 2023 of the MeggaCell DUNE-VD (nueva cajita; to be run as option3)
+* ```megacell_v3.json``` -> measurements from Dicember 2023 of the MeggaCell DUNE-VD (default)
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 

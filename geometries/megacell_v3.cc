@@ -148,9 +148,9 @@ void MyDetectorConstruction::ConstructScintillator()
     R_SiPM1->rotateY( SiPM_rot[1]*deg);
     R_SiPM1->rotateZ( SiPM_rot[2]*deg);
 
-    R_SiPM2->rotateX(-SiPM_rot[0]*deg);
-    R_SiPM2->rotateY(-SiPM_rot[1]*deg);
-    R_SiPM2->rotateZ(-SiPM_rot[2]*deg);
+    R_SiPM2->rotateX( SiPM_rot[0]*deg);
+    R_SiPM2->rotateY( SiPM_rot[1]*deg);
+    R_SiPM2->rotateZ( SiPM_rot[2]*deg);
     
     G4VPhysicalVolume *physSiPM1 = new G4PVPlacement(R_SiPM1, G4ThreeVector( SiPM1_x[0] * mm, SiPM1_x[1] * mm, SiPM1_x[2] * mm), logicSiPM1, "physSiPM1", logicWorld, false, 1, true);
     G4VPhysicalVolume *physSiPM2 = new G4PVPlacement(R_SiPM2, G4ThreeVector( SiPM2_x[0] * mm, SiPM2_x[1] * mm, SiPM2_x[2] * mm), logicSiPM2, "physSiPM2", logicWorld, false, 1, true);
