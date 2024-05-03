@@ -1,6 +1,13 @@
 import uproot,os,sys
-import numpy as np
+import numpy             as np
+import pandas            as pd
 import matplotlib.pyplot as plt
+import plotly.express    as px
+import plotly.graph_objs as go
+from plotly.subplots import make_subplots
+
+# Set matplotlib font size
+plt.rcParams.update({'font.size': 14})
 
 def extract_branches(folder,root_file,sensors,branches={"Photons":["X","Y","Z","Phi","Theta","Sensor"],"Hits":["Sensor","AccumHits"]},debug=False):
     opened_file = uproot.open(folder+root_file)
@@ -39,32 +46,39 @@ def plot_variable_distributions(my_data,variable,stats=(False,False),bins=100,pr
     fig = plt.figure(dpi=dpi)
     for my_file in my_data.keys():
         plt.title(my_file.replace(".root",""))
-        for sensor in my_data[my_file]:
-            # Check if variable exists
-            try: my_data[my_file][sensor][variable]
-            except KeyError:
-                print("ERROR: Variable %s not found in %s"%(variable,my_file))
-                print("Available variables are: %s"%my_data[my_file][sensor].keys())
-                raise KeyError
-            # Compute percentile
-            hist_data = np.sort(my_data[my_file][sensor][variable])
-            if debug: print("%s: %i"%(variable,len(my_data[my_file][sensor][variable])))
-            selected_data = hist_data[int(percentile[0]*len(hist_data)):int(percentile[1]*len(hist_data))]
-            if debug: print("%s after percentile cut: %i"%(variable,len(selected_data)))
-            # Compute histogram
-            h, bins = np.histogram(selected_data,bins,density=density)
-            if probability and not density: h = h/np.sum(h)
-            bin_centers = (bins[1:]+bins[:-1])/2
-            # Plot
-            plt.bar(bin_centers,h,width=(bins[1]-bins[0]),alpha=.5,label=sensor)
-            # Compute stats
-            mean = np.mean(selected_data)
-            std  = np.std(selected_data)
-            if stats[0]: print("Mean %s: %0.2f +- %0.2f"%(sensor,mean,std))
-            if stats[1]:
-                plt.axvline(mean,color="green",label="Mean %0.2f"%mean)
-                plt.axvline(mean+std,linestyle="--",color="green",label="Std %0.2f"%std)
-                plt.axvline(mean-std,linestyle="--",color="green",label="Std %0.2f"%std)
+        if not os.path.isdir("../results/stats/"): os.mkdir("../results/stats/")
+        with open("../results/stats/"+my_file.split('.root')[0]+'_'+variable+"_stats.txt","w") as f:
+            for sensor in my_data[my_file]:
+                # Check if variable exists
+                try: my_data[my_file][sensor][variable]
+                except KeyError:
+                    print("ERROR: Variable %s not found in %s"%(variable,my_file))
+                    print("Available variables are: %s"%my_data[my_file][sensor].keys())
+                    raise KeyError
+                # Compute percentile
+                hist_data = np.sort(my_data[my_file][sensor][variable])
+                if debug: print("%s: %i"%(variable,len(my_data[my_file][sensor][variable])))
+                selected_data = hist_data[int(percentile[0]*len(hist_data)):int(percentile[1]*len(hist_data))]
+                if debug: print("%s after percentile cut: %i"%(variable,len(selected_data)))
+                # Compute histogram
+                h, bins = np.histogram(selected_data,bins,density=density)
+                if probability and not density: h = h/np.sum(h)
+                bin_centers = (bins[1:]+bins[:-1])/2
+                # Plot
+                plt.bar(bin_centers,h,width=(bins[1]-bins[0]),alpha=.5,label=sensor)
+                # Compute stats
+                mean = np.mean(selected_data)
+                std  = np.std(selected_data)
+                if stats[0]:
+                    print("Mean %s: %0.2f +- %0.2f"%(sensor,mean,std))
+                    # Save stats to file
+                    f.write("Mean %s: %0.2f +- %0.2f\n"%(sensor,mean,std))
+
+                if stats[1]:
+                    plt.axvline(mean,color="green",label="Mean %0.2f"%mean)
+                    plt.axvline(mean+std,linestyle="--",color="green",label="Std %0.2f"%std)
+                    plt.axvline(mean-std,linestyle="--",color="green",label="Std %0.2f"%std)
+        
         # Plot settings
         plt.xlabel(variable)
         if density: plt.ylabel("Density")
@@ -76,8 +90,8 @@ def plot_variable_distributions(my_data,variable,stats=(False,False),bins=100,pr
         plt.grid()
         # Save figure
         # Check if folder exists
-        if not os.path.isdir("../results/"): os.mkdir("../results/")
-        if save: plt.savefig("../results/"+my_file.split('.root')[0]+'_'+variable+".png")
+        if not os.path.isdir("../results/images/"): os.mkdir("../results/images/")
+        if save: plt.savefig("../results/images/"+my_file.split('.root')[0]+'_'+variable+".png")
     return fig
 
 def plot_photon_density(my_data, surface, bins=100, density=False, figsize=(None,None), dpi=50, save=False, debug=False):
@@ -99,8 +113,8 @@ def plot_photon_density(my_data, surface, bins=100, density=False, figsize=(None
     fig.colorbar(h[3], ax=axs.ravel().tolist())
     fig.set_figwidth(figsize[0])
     fig.set_figheight(figsize[1])
-    if not os.path.isdir("../results/"): os.mkdir("../results/")
-    if save: plt.savefig("../results/"+my_file.split('.root')[0]+"_PhotonDensity.png")
+    if not os.path.isdir("../results/images/"): os.mkdir("../results/images/")
+    if save: plt.savefig("../results/images/"+my_file.split('.root')[0]+"_PhotonDensity.png")
     return fig  
 
 def plot_acumhits(my_data, dpi=50, bins=[100,35,35], semilogy=False, debug=False):
