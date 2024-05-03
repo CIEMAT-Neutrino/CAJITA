@@ -6,7 +6,7 @@ MySensitiveDetector::MySensitiveDetector(G4String name) : G4VSensitiveDetector(n
     quEff = new G4PhysicsOrderedFreeVector();
 
     std::ifstream datafile;
-    datafile.open("PMT_qeff.dat"); //file with qefficiency given in the datasheet
+    datafile.open("bin/PMT_qeff.dat"); //file with qefficiency given in the datasheet
 
     while(1)
     {
