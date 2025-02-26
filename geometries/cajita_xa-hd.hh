@@ -26,6 +26,7 @@ class MyDetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
     MyDetectorConstruction(); //constructor
+    MyDetectorConstruction(G4String jsonName); //constructor
     ~MyDetectorConstruction(); //destructor
 
     virtual G4VPhysicalVolume *Construct();
@@ -36,6 +37,7 @@ private:
     G4VPhysicalVolume *physWorld, *physCajitaOut, *physCajitaIn, *physSiPM1, *physSiPM2, *physPMT, *physSC,*physSC1,*physSC2, *physBoxOut, *physBoxIn;
     G4Material *Air, *LAr, *Plastic, *Metal, *Iron, *Nickel, *Copper;
 
+    G4String fjsonName;
     void ConstructScintillator();
     void DefineMaterials();
     virtual void ConstructSDandField(); //construct sensitive detector and E/B field
