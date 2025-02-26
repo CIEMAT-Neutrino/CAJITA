@@ -16,7 +16,7 @@ Chronologically we have created the files as follows:
 
 4.- Particle generator (generator)
 
-5.- Inserting sensitive detector (detector) and we add in construcction.cc the detectors' volumes
+5.- Inserting sensitive detector (detector) and we add in ```construcction.cc``` the detectors' volumes
 
 6.- Store the information in a ```.root``` file (with Ntuples). Defined in ```run.cc``` and ```run.hh```. We can see the stored information:
 
@@ -29,9 +29,9 @@ Chronologically we have created the files as follows:
 7.- Automatizating the code
 
 * ```vis.mac``` for visualization commands -> when creating vis.mac it is not in /build and it is not found, we move all the macro file 
-  to the right directory without including absolute paths -> look in CMakeLists.txt
+  to the right directory without including absolute paths -> look in ```CMakeLists.txt```
   
-* `run.mac` -> change the momentum for each particle creation. Changes in box1.cc to accept command line inputs as files (Execute as: >>./box1 *.mac).
+* `run.mac` -> change the momentum for each particle creation. Changes in box1.cc to accept command line inputs as files (Execute as: ```>>./box1 *.mac```).
 
 * `*.dat` -> store quantum/photon detection efficiencies for the different detectors.
 
