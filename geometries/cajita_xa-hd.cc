@@ -1,7 +1,16 @@
 #include "construction.hh"
 
 MyDetectorConstruction::MyDetectorConstruction()
-{}
+{
+    std::cout << "No geometry file provided." << std::endl;
+    fjsonName = "None";
+}
+
+MyDetectorConstruction::MyDetectorConstruction(G4String jsonName)
+{
+    // std::cout<<"Loading Geometry from: "<<jsonName<<" file."<<std::endl;
+    fjsonName = jsonName;
+}
 
 MyDetectorConstruction::~MyDetectorConstruction()
 {}
