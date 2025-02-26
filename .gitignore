@@ -1,4 +1,4 @@
-analysis/*
+analysis/*.ipynb
 build/*
 data/*
 scratch/*
