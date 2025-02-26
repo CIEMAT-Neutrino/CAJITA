@@ -18,7 +18,7 @@ Chronologically we have created the files as follows:
 
 5.- Inserting sensitive detector (detector) and we add in construcction.cc the detectors' volumes
 
-6.- Store the information in a .root file (with Ntuples). Defined in ```run.cc``` and ```run.hh```. We can see the stored information:
+6.- Store the information in a ```.root``` file (with Ntuples). Defined in ```run.cc``` and ```run.hh```. We can see the stored information:
 
 ```console
   >> root output.root
@@ -48,8 +48,8 @@ We want to show Scintillation LAr light (see [G4Scintillation](https://apc.u-par
 To be ran in ```gaeuidc1.ciemat.es``` (```CentOS7```, ```Geant4 v10-07-patch01```, ```Motif``` library)
 
 For new simulations you need:
-* New file in configs/your_geometry.json  (check TEMPLATE.md)
-* Two files in geometries/ your_geometry.cc + your_geometry.hh
+* New file in ```configs/your_geometry.json```  (check TEMPLATE.md)
+* Two files in ```geometries/``` ```your_geometry.cc``` + ```your_geometry.hh```
 
 You can try with an existing one first as follows:
 
