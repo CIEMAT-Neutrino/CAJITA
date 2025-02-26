@@ -150,8 +150,6 @@ In the analysis folder you can find some scripts to analyse the output of the si
 
 To run type ```python3 your_script.py``` in your terminal. The scripts allow some inputs with flags run ```python3 your_script.py --help``` for more info on how to change the default parameters.
 
-TO DO: homogeneize and remove redundant(s) if any
-
 If you have chosen to run the simulation with the multithreading option you will have different files you may need to combine before looking at the results. Check this command 😉:
 
 ```console
