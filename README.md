@@ -46,6 +46,7 @@ We want to show Scintillation LAr light (see [G4Scintillation](https://apc.u-par
 ## RUN GEANT4 SIMULATION
 
 To be ran in ```gaeuidc1.ciemat.es``` (```CentOS7```, ```Geant4 v10-07-patch01```, ```Motif``` library)
+
 For new simulations you need:
 * New file in configs/your_geometry.json  (check TEMPLATE.md)
 * Two files in geometries/ your_geometry.cc + your_geometry.hh
