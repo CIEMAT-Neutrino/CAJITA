@@ -64,11 +64,11 @@ def plot_variable_distributions(my_data,variable,stats=(False,False),bins=100,pr
                 h, bins = np.histogram(selected_data,bins,density=density)
                 if probability and not density: h = h/np.sum(h)
                 bin_centers = (bins[1:]+bins[:-1])/2
-                # Plot
-                plt.bar(bin_centers,h,width=(bins[1]-bins[0]),alpha=.5,label=sensor)
                 # Compute stats
                 mean = np.mean(selected_data)
                 std  = np.std(selected_data)
+                # Plot
+                plt.bar(bin_centers,h,width=(bins[1]-bins[0]),alpha=.5,label=f"{sensor}: {mean:.2f} +- {std:.2f}")
                 if stats[0]:
                     print("Mean %s: %0.2f +- %0.2f"%(sensor,mean,std))
                     # Save stats to file
