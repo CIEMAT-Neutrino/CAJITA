@@ -62,9 +62,9 @@ Before the compilation occurs you will need to choose a geometry to be used amon
 
 ⚠️ WARNINGS ⚠️
 
-* You will need the library **Motif** for a successful compilation (ask ae_support to install it in you local pcae if you need it)
+* You will need the library **Motif** for a successful compilation (ask ae_support to install it in you local pcae if you need it). It is already installed in ```gaeuidc1```.
 * _run_build.sh_ script only runs from main folder (it will ask for your confirmation to continue with the process)
-* You need to choose a geometry (_geometries_ and _configs_ folders 📂) for the compilation. Each change need to be recompiled !!
+* You need to choose a geometry (_geometries_ and _configs_ folders 📂) for the compilation. Each change need to be recompiled !! (Do not include the extension of the file)
 
 🆕 Once you have clearly chosen your geometry you can compile with ```./scripts/run_build.sh geometry``` to avoid the second question of the script.
 ![build](https://github.com/CIEMAT-Neutrino/SIM_LAB_GEANT4/assets/80100549/b5648858-3a74-4393-bf29-8cd26bd02b36)
@@ -73,7 +73,7 @@ Before the compilation occurs you will need to choose a geometry to be used amon
 
 ### 👾 2. RUN YOUR CHOSEN GEOMETRY
 
-Therer are three options of configuring the geometry that can be run as:
+There are three options of configuring the geometry that can be run as:
 
 * option1: no json. Source information in the .mac. Compile to update changes in construction.
 
@@ -96,8 +96,20 @@ Therer are three options of configuring the geometry that can be run as:
 ![run_option3](https://github.com/CIEMAT-Neutrino/SIM_LAB_GEANT4/assets/80100549/47a9cddc-dc6e-43fb-b0b5-92d9071cc077)
 ![output_option3](https://github.com/CIEMAT-Neutrino/SIM_LAB_GEANT4/assets/80100549/0c6a1eab-9b91-479d-8438-5bf29c3d454d)
 
-🗒️ Note: each time you change the geometry you need to recompile the code. Probably the simulation output is big so if you need to run several simulation for optimize the setup it is better to allocate the output in a different folder (i.e. in ```/pc/choozdsk01/palomare/GEANT4``` or ```/pnfs/ciemat.es/neutrinos/```  where you can make your own folder ).
+🗒️ Note: each time you change the geometry you need to recompile the code. Probably the simulation output is big so if you need to run several simulation for optimize the setup it is better to allocate the output in a different folder (i.e. in ```/pc/choozdsk01/DATA/GEANT4``` or ```/pnfs/ciemat.es/neutrinos/```  where you can make your own folder ).
 Moreover if you need to define a geometry based on different simulations you can check production folder with examples on how to change some parameters with different ```*.json``` without compilation and run at the same time with the ```production/production.sh``` script.
+
+
+🖥️ The code is prepared for paralelizing the simulation process. You can notice this when the following message appears in the building process.
+
+```console
+  Manually-specified variables were not used by the project:
+
+    GEANT4_BUILD_MULTITHREADED
+```
+
+To choose the number of nodes go to the ```box1.cc``` file line ```runManager->SetNumberOfThreads(12); // 1 for no multithreading (default) you can change to the number of threads you want``` and change it as you need.
+
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -107,12 +119,12 @@ You can also find some of the geometries used in the IR02 setups:
 
 * ```cajita_xa-hd.mac``` -> measurements from October 2021 to February 2022 of the X-ARAPUCA DUNE HD (to be run as option1)
 
-* ```cajita_xa-sbnd.json``` -> measurements from Febreuary 2023 to April 2023 of the X-ARAPUCA SBND (to be run as option3). 
+* ```cajita_xa-sbnd.json``` -> measurements from February 2023 to April 2023 of the X-ARAPUCA SBND (to be run as option3). 
     There are two types of files for production (*_prod) and for visualization. 
     Moreover there were two measurements to be made with visible ligth (VIS) and with alpha source (VUV)
 * ```megacell_v1.json``` -> measurements of August 2023 of the MeggaCell DUNE-VD (to be run as option3).
 * ```megacell_v2.json``` -> measurements from October 2023 of the MeggaCell DUNE-VD (nueva cajita; to be run as option3)
-* ```megacell_v3.json``` -> measurements from Dicember 2023 of the MeggaCell DUNE-VD (default)
+* ```megacell_v3.json``` -> measurements from December 2023 of the MeggaCell DUNE-VD (default)
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
