@@ -35,7 +35,7 @@ Chronologically we have created the files as follows:
 
 * `*.dat` -> store quantum/photon detection efficiencies for the different detectors.
 
-8th: Analysing the Ntuple.root generated with the photons' hits. We created notebooks in ```analysis``` folder for this purpose.
+8th: Analysing the Ntuple.root generated with the photons' hits. Have a look at the ```analysis``` folder.
 
 We can send alpha particles (blue), electrons(red) and photons(green) are produced. 
 We would need to include the energy deposition calculation that can be also stored in the NTuple.
@@ -106,7 +106,7 @@ There are three options of configuring the geometry that can be run as:
 
 🔍 CHECK ```configs/TEMPLATE.md``` for more details. 
 
-🗒️ Note: each time you change the geometry you need to recompile the code. Probably the simulation output is big so if you need to run several simulation for optimize the setup it is better to allocate the output in a different folder (i.e. in ```/pc/choozdsk01/DATA/GEANT4``` or ```/pnfs/ciemat.es/neutrinos/```  where you can make your own folder ).
+🗒️ Note: each time you change the geometry you need to recompile the code. Probably the simulation output is big so if you need to run several simulation for optimize the setup it is better to allocate the output in a different folder (i.e. in ```/pc/choozdsk01/DATA/CAJITA``` or ```/pnfs/ciemat.es/neutrinos/```  where you can make your own folder ).
 Moreover if you need to define a geometry based on different simulations you can check production folder with examples on how to change some parameters with different ```*.json``` without compilation and run at the same time with the ```production/production.sh``` script.
 
 
@@ -138,16 +138,17 @@ You can also find some of the geometries used in the IR02 setups:
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-### 🪄 4. ANALYSIS: JUPYTER NOTEBOOKS
+### 🪄 4. ANALYSIS: PYTHON SCRIPTS
 
-In the analysis folder you can find some notebooks to analyse the output of the simulation. Notebooks outputs are saved in the ```results``` folder. If the ```AccumHits`` variable is needed make sure that ```save_all = true``` in ```detector.cc``` is enabled (it is by default)
+In the analysis folder you can find some scripts to analyse the output of the simulation. Outputs are saved in the ```results``` folder. If the ```AccumHits`` variable is needed make sure that ```save_all = true``` in ```detector.cc``` is enabled (it is by default).
 
-* ```AnaliticIntegral.ipynb``` ---> expected shapes of the distributions for the different detectors
-* ```SimulationHitDistribution.ipynb``` ---> accumulated number of hits in plotly (+ the combinated distribution for SiPMs)
-* ```SimulationOutput.ipynb``` ---> #PE and angular distribution per sensor
-* ```SimulationSurfaceDistribution.ipynb``` ---> plots the photon density in a 2D histogram for each sensor
 
-TO DO: homogeneize the notebooks and remove redundant(s) if any
+* ```AnaliticIntegral.py``` ---> expected shapes of the distributions for the different detectors
+* ```SimulationHitDistribution.py``` ---> accumulated number of hits in plotly (+ the combinated distribution for SiPMs)
+* ```SimulationOutput.py``` ---> #PE and angular distribution per sensor
+* ```SimulationSurfaceDistribution.py``` ---> plots the photon density in a 2D histogram for each sensor
+
+TO DO: homogeneize and remove redundant(s) if any
 
 If you have chosen to run the simulation with the multithreading option you will have different files you may need to combine before looking at the results. Check this command 😉:
 
