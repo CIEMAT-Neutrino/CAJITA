@@ -148,6 +148,8 @@ In the analysis folder you can find some scripts to analyse the output of the si
 * ```SimulationOutput.py``` ---> #PE and angular distribution per sensor
 * ```SimulationSurfaceDistribution.py``` ---> plots the photon density in a 2D histogram for each sensor
 
+To run type ```python3 your_script.py``` in your terminal. The scripts allow some inputs with flags run ```python3 your_script.py --help``` for more info on how to change the default parameters.
+
 TO DO: homogeneize and remove redundant(s) if any
 
 If you have chosen to run the simulation with the multithreading option you will have different files you may need to combine before looking at the results. Check this command 😉:
