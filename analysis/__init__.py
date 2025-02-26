@@ -1,4 +1,5 @@
 import uproot,os,sys
+import argparse
 import numpy             as np
 import pandas            as pd
 import matplotlib.pyplot as plt
@@ -9,7 +10,7 @@ from plotly.subplots import make_subplots
 # Set matplotlib font size
 plt.rcParams.update({'font.size': 14})
 
-def extract_branches(folder,root_file,sensors,branches={"Photons":["X","Y","Z","Phi","Theta","Sensor"],"Hits":["Sensor","AccumHits"]},debug=False):
+def extract_branches(folder, root_file,sensors, branches={"Photons":["X","Y","Z","Phi","Theta","Sensor"],"Hits":["Sensor","AccumHits"]}, debug=False):
     opened_file = uproot.open(folder+root_file)
     branch_dict = dict.fromkeys(branches.keys())
     my_data = dict.fromkeys([root_file]); my_data[root_file] = dict.fromkeys(sensors)
@@ -24,7 +25,7 @@ def extract_branches(folder,root_file,sensors,branches={"Photons":["X","Y","Z","
                 my_data[root_file][sensor][branch] = branch_dict[key][branch][branch_dict[key]["Sensor"]==s]
     return my_data
 
-def compute_real_angles(my_data,sensors_info,debug=False):
+def compute_real_angles(my_data, sensors_info, debug=False):
     for geo_file in my_data.keys():
         for sensor in my_data[geo_file].keys():
             phi   = my_data[geo_file][sensor]["Phi"]
@@ -89,9 +90,10 @@ def plot_variable_distributions(my_data,variable,stats=(False,False),bins=100,pr
         plt.legend()
         plt.grid()
         # Save figure
-        # Check if folder exists
         if not os.path.isdir("../results/images/"): os.mkdir("../results/images/")
-        if save: plt.savefig("../results/images/"+my_file.split('.root')[0]+'_'+variable+".png")
+        if save: 
+            plt.savefig("../results/images/"+my_file.split('.root')[0]+'_'+variable+".png")
+            if debug: print("Saving figure to ../results/images/"+my_file.split('.root')[0]+'_'+variable+".png")
     return fig
 
 def plot_photon_density(my_data, surface, bins=100, density=False, figsize=(None,None), dpi=50, save=False, debug=False):
@@ -114,7 +116,9 @@ def plot_photon_density(my_data, surface, bins=100, density=False, figsize=(None
     fig.set_figwidth(figsize[0])
     fig.set_figheight(figsize[1])
     if not os.path.isdir("../results/images/"): os.mkdir("../results/images/")
-    if save: plt.savefig("../results/images/"+my_file.split('.root')[0]+"_PhotonDensity.png")
+    if save:
+        plt.savefig("../results/images/"+my_file.split('.root')[0]+"_PhotonDensity.png")
+        if debug: print("Saving figure to ../results/images/"+my_file.split('.root')[0]+"_PhotonDensity.png")
     return fig  
 
 def plot_acumhits(my_data, dpi=50, bins=[100,35,35], semilogy=False, debug=False):
