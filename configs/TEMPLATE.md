@@ -1,12 +1,18 @@
 {
-  ## No comments are accepted in json files. Use this as reference.
+
+## No comments are accepted in json files. Use this as reference
+
   "comments": "Position units given in mm",
 
-  ## True if you want a pop-up window with you geometry to appear. Use only for debug, set false for production!!
+## True if you want a pop-up window with you geometry to appear. Use only for debug, set false for production
+
   "display": true,
   
-  ## Typical G4 parameters. Check the manual https://geant4.web.cern.ch/documentation/dev/prm_html/PhysicsReferenceManual/
-  ## To be changed: the energy is setted for UV photons (9.7eV); the source position and shape fits the alphas source of 23mm diameter at IR02, change the centre and rotation angles; number are the number of photons simulated per event and beamOn is the number of events to be simulated. To check the geometry que do not need big amount of them.
+## Typical G4 parameters. Check the manual <https://geant4.web.cern.ch/documentation/dev/prm_html/PhysicsReferenceManual/>
+
+## To be changed: the energy is setted for UV photons (9.7eV); the source position and shape fits the alphas source of 23mm diameter at IR02, change the centre and rotation angles; number are the number of photons simulated per event and beamOn is the number of events to be simulated. To check the geometry que do not need big amount of them
+
+```json
   "G4_beam_settings": [
     "/gps/particle opticalphoton",
     "/gps/ene/type Mono",
@@ -22,8 +28,11 @@
     "/run/beamOn 1",
     "/run/initialize"
   ],
+```
 
-  ## Visualization settings
+## Visualization settings
+
+```json
   "G4_vis_settings": [
     "/vis/viewer/set/autorefresh/true",
     "/vis/open OGL",
@@ -37,22 +46,32 @@
     "/vis/viewer/set/background grey",
     "/vis/scene/endOfEventAction accumulate 10"
   ],
+```
 
-  ## Labels for the optical sensors to be simulated in the box
+## Labels for the optical sensors to be simulated in the box
+
+```json
   "sensors_keys": [
     "XArapuca",
     "SiPM1",
     "SiPM2"
   ],
-  ## Position of the source
+```
+
+## Position of the source
+
+```json
   "source": {
     "X": 0,
     "Y": 0,
     "Z": 0
   },
+```
 
-  ## From this point the geometry of each campaign is different. The following keys need to be called from geometries/your_geometry.cc and .hh. As an example in line 113 of megacell_v3.cc you find the import for big_cajita and so on.
-  ## This way we do not need to compile at every change we want to test of the geometry, just re-run with a new value in the json file. Moreover, productions can be made just changing parameters from a bash script without recompiling.
+## From this point the geometry of each campaign is different. The following keys need to be called from geometries/your_geometry.cc and .hh. As an example in line 113 of megacell_v3.cc you find the import for big_cajita and so on
+
+## This way we do not need to compile at every change we want to test of the geometry, just re-run with a new value in the json file. Moreover, productions can be made just changing parameters from a bash script without recompiling
+
   ```json
   "big_cajita": {
     "outter_dim": [
@@ -167,5 +186,4 @@
       0.0
     ]
   }
-}
-``
+```
