@@ -62,9 +62,9 @@ Before the compilation occurs you will need to choose a geometry to be used amon
 
 ⚠️ WARNINGS ⚠️
 
-* You will need the library **Motif** for a successful compilation (ask ae_support to install it in you local pcae if you need it)
+* You will need the library **Motif** for a successful compilation (ask ae_support to install it in you local pcae if you need it). It is already installed in ```gaeuidc1```.
 * _run_build.sh_ script only runs from main folder (it will ask for your confirmation to continue with the process)
-* You need to choose a geometry (_geometries_ and _configs_ folders 📂) for the compilation. Each change need to be recompiled !!
+* You need to choose a geometry (_geometries_ and _configs_ folders 📂) for the compilation. Each change need to be recompiled !! (Do not include the extension of the file)
 
 🆕 Once you have clearly chosen your geometry you can compile with ```./scripts/run_build.sh geometry``` to avoid the second question of the script.
 ![build](https://github.com/CIEMAT-Neutrino/SIM_LAB_GEANT4/assets/80100549/b5648858-3a74-4393-bf29-8cd26bd02b36)
@@ -73,7 +73,7 @@ Before the compilation occurs you will need to choose a geometry to be used amon
 
 ### 👾 2. RUN YOUR CHOSEN GEOMETRY
 
-Therer are three options of configuring the geometry that can be run as:
+There are three options of configuring the geometry that can be run as:
 
 * option1: no json. Source information in the .mac. Compile to update changes in construction.
 
