@@ -1,8 +1,10 @@
+analysis/*
 build/*
 data/*
 scratch/*
 results/images/*
 results/stats/*
+.vscode/*
 *.png
 *.root
 *.ipynb_checkpoints
