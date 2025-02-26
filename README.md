@@ -141,7 +141,7 @@ You can also find some of the geometries used in the IR02 setups:
 
 ### 🪄 4. ANALYSIS: PYTHON SCRIPTS
 
-In the analysis folder you can find some scripts to analyse the output of the simulation. Outputs are saved in the ```results``` folder. If the ```AccumHits`` variable is needed make sure that ```save_all = true``` in ```detector.cc``` is enabled (it is by default).
+In the analysis folder you can find some scripts to analyse the output of the simulation. Outputs are saved in the ```results``` folder. If the ```AccumHits``` variable is needed make sure that ```save_all = true``` in ```detector.cc``` is enabled (it is by default).
 
 
 * ```AnaliticIntegral.py``` ---> expected shapes of the distributions for the different detectors
