@@ -53,6 +53,7 @@
 
   ## From this point the geometry of each campaign is different. The following keys need to be called from geometries/your_geometry.cc and .hh. As an example in line 113 of megacell_v3.cc you find the import for big_cajita and so on.
   ## This way we do not need to compile at every change we want to test of the geometry, just re-run with a new value in the json file. Moreover, productions can be made just changing parameters from a bash script without recompiling.
+  ```json
   "big_cajita": {
     "outter_dim": [
       67.0,
@@ -167,3 +168,4 @@
     ]
   }
 }
+``
