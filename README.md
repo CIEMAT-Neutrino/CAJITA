@@ -98,6 +98,16 @@ There are three options of configuring the geometry that can be run as:
 
 🗒️ Note: each time you change the geometry you need to recompile the code. Probably the simulation output is big so if you need to run several simulation for optimize the setup it is better to allocate the output in a different folder (i.e. in ```/pc/choozdsk01/palomare/GEANT4``` or ```/pnfs/ciemat.es/neutrinos/```  where you can make your own folder ).
 Moreover if you need to define a geometry based on different simulations you can check production folder with examples on how to change some parameters with different ```*.json``` without compilation and run at the same time with the ```production/production.sh``` script.
+🖥️ The code is prepared for paralelizing the simulation process. You can notice this when the following message appears in the building process.
+
+```console
+  Manually-specified variables were not used by the project:
+
+    GEANT4_BUILD_MULTITHREADED
+```
+
+To choose the number of nodes go to the ```box1.cc``` file line ```runManager->SetNumberOfThreads(12); // 1 for no multithreading (default) you can change to the number of threads you want``` and change it as you need.
+
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -107,12 +117,12 @@ You can also find some of the geometries used in the IR02 setups:
 
 * ```cajita_xa-hd.mac``` -> measurements from October 2021 to February 2022 of the X-ARAPUCA DUNE HD (to be run as option1)
 
-* ```cajita_xa-sbnd.json``` -> measurements from Febreuary 2023 to April 2023 of the X-ARAPUCA SBND (to be run as option3). 
+* ```cajita_xa-sbnd.json``` -> measurements from February 2023 to April 2023 of the X-ARAPUCA SBND (to be run as option3). 
     There are two types of files for production (*_prod) and for visualization. 
     Moreover there were two measurements to be made with visible ligth (VIS) and with alpha source (VUV)
 * ```megacell_v1.json``` -> measurements of August 2023 of the MeggaCell DUNE-VD (to be run as option3).
 * ```megacell_v2.json``` -> measurements from October 2023 of the MeggaCell DUNE-VD (nueva cajita; to be run as option3)
-* ```megacell_v3.json``` -> measurements from Dicember 2023 of the MeggaCell DUNE-VD (default)
+* ```megacell_v3.json``` -> measurements from December 2023 of the MeggaCell DUNE-VD (default)
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
