@@ -98,6 +98,8 @@ There are three options of configuring the geometry that can be run as:
 
 🗒️ Note: each time you change the geometry you need to recompile the code. Probably the simulation output is big so if you need to run several simulation for optimize the setup it is better to allocate the output in a different folder (i.e. in ```/pc/choozdsk01/palomare/GEANT4``` or ```/pnfs/ciemat.es/neutrinos/```  where you can make your own folder ).
 Moreover if you need to define a geometry based on different simulations you can check production folder with examples on how to change some parameters with different ```*.json``` without compilation and run at the same time with the ```production/production.sh``` script.
+
+
 🖥️ The code is prepared for paralelizing the simulation process. You can notice this when the following message appears in the building process.
 
 ```console
