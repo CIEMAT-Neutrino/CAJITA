@@ -283,11 +283,14 @@ hadd -k COMBINED_ALL_OUTPUTS.root COMMOM_NAME_t*
   We would need to include the energy deposition calculation that can be also stored in the NTuple.
   We want to show Scintillation LAr light (see [G4Scintillation](https://apc.u-paris.fr/~franco/g4doxy/html/classG4Scintillation.html))
 
-</details>
+
 
 We found useful this scheme from the manual to understand reflections parameters in a metal interface:
 
 ![Captura de pantalla de 2025-02-27 12-22-02](https://github.com/user-attachments/assets/a4429362-70f1-4c27-8875-75d218de56ae)
+
+
+</details>
 
 
 <details>
