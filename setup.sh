@@ -20,12 +20,12 @@ echo -e "\e[32mCreated directory for results\e[0m"
 # Check if directory data exists
 if [ ! -d "data" ]; then
     mkdir data
-    sshfs ${USER}@gaeuidc1.ciemat.es:/pc/choozdsk01/DATA/CAJITA/ data
+    sshfs ${USER}@gaeuidc1.ciemat.es:/pc/choozdsk01/DATA/CAJITA/output data
     echo -e "\e[32mCreated directory for data\e[0m"
 else
     # If directory data exists, check if it is empty
     if [ -z "$(ls -A data)" ]; then
-        sshfs ${USER}@gaeuidc1.ciemat.es:/pc/choozdsk01/DATA/CAJITA/ data
+        sshfs ${USER}@gaeuidc1.ciemat.es:/pc/choozdsk01/DATA/CAJITA/output data
         echo -e "\e[32mCreated directory for data\e[0m"
     else
         echo -e "\e[32mData directory already exists and is not empty\e[0m"
