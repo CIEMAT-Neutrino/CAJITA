@@ -1,6 +1,7 @@
 analysis/*.ipynb
 analysis/*.pyc
 build/*
+data
 data/*
 scratch/*
 results/images/*
