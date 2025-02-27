@@ -207,124 +207,126 @@ fig.update_xaxes(showgrid=True, title_text="Number of photons detected", mirror=
 fig.update_yaxes(showgrid=True, title_text="Probability", mirror=True, ticks="outside", showline=True, tickfont=dict(size=18))
 fig.show()
 
+
+######################################################################################################################################################33
 ## Fit
 
-charges_dec=np.load("alpha_source_spectrum_OV_9.npy")
-print(np.mean(charges_dec))
+# charges_dec=np.load("alpha_source_spectrum_OV_9.npy")
+# print(np.mean(charges_dec))
 
-elec_smear=0.10
-efficiency=0.0178
-sen=0
+# elec_smear=0.10
+# efficiency=0.0178
+# sen=0
 
 
-if True:
-# if not ( ( "aux_binom" in locals() ) or ( "aux_binom" in globals() ) ):#run only once
-    aux_binom=np.zeros(nhits[sensor==sen].shape[0])
-    aux_poiss=np.zeros(nhits[sensor==sen].shape[0])
+# if True:
+# # if not ( ( "aux_binom" in locals() ) or ( "aux_binom" in globals() ) ):#run only once
+#     aux_binom=np.zeros(nhits[sensor==sen].shape[0])
+#     aux_poiss=np.zeros(nhits[sensor==sen].shape[0])
 
-    z=0
-    for nphot in nhits[sensor==sen]:
-        # ## binomial distribution for each photon. 1=detected, 0=not detected
-        # dice=np.random.uniform(0,1,int(nphot)) 
-        # aux_binom[z]=np.sum(dice<efficiency)
+#     z=0
+#     for nphot in nhits[sensor==sen]:
+#         # ## binomial distribution for each photon. 1=detected, 0=not detected
+#         # dice=np.random.uniform(0,1,int(nphot)) 
+#         # aux_binom[z]=np.sum(dice<efficiency)
         
-        ## poisson distribution, faster but less accurate for low number of photons (the tails are not well reproduced)
-        lambda_ = efficiency * nphot
-        aux_poiss[z]   =np.random.poisson(lambda_)
-        z+=1;
+#         ## poisson distribution, faster but less accurate for low number of photons (the tails are not well reproduced)
+#         lambda_ = efficiency * nphot
+#         aux_poiss[z]   =np.random.poisson(lambda_)
+#         z+=1;
 
-#MC
-MC=aux_poiss
-a=np.histogram(MC,200,[0,1000])
+# #MC
+# MC=aux_poiss
+# a=np.histogram(MC,200,[0,1000])
 
-np.save("unfolding/MC.npy",MC)
-# a=plt.hist(MC,200,[0,1000],histtype="step",weights=np.ones(aux.shape[0])*charges_dec.shape[0]/aux.shape[0],label="G4 montecarlo");
+# np.save("unfolding/MC.npy",MC)
+# # a=plt.hist(MC,200,[0,1000],histtype="step",weights=np.ones(aux.shape[0])*charges_dec.shape[0]/aux.shape[0],label="G4 montecarlo");
 
-RANGE=100
-aux_MC=np.zeros((RANGE,a[0].shape[0]))
-plt.figure(dpi=150)
+# RANGE=100
+# aux_MC=np.zeros((RANGE,a[0].shape[0]))
+# plt.figure(dpi=150)
 
-for i in range(RANGE):
-    a=np.histogram(aux_poiss*np.random.normal(1, elec_smear, int(MC.shape[0])),int(200),[0,1000],weights=np.ones(aux.shape[0])*charges_dec.shape[0]/aux.shape[0]);
-    aux_MC[i,:]=a[0]
+# for i in range(RANGE):
+#     a=np.histogram(aux_poiss*np.random.normal(1, elec_smear, int(MC.shape[0])),int(200),[0,1000],weights=np.ones(aux.shape[0])*charges_dec.shape[0]/aux.shape[0]);
+#     aux_MC[i,:]=a[0]
 
-# a=plt.hist(np.mean(aux_MC,axis=0),200,[0,1000],histtype="step",weights=np.ones(aux.shape[0])*charges_dec.shape[0]/aux.shape[0],label="G4 montecarlo + 10% Gaussian uncertainty");
-plt.plot((a[1][1:]+a[1][:-1])/2,np.mean(aux_MC,axis=0),label="G4 montecarlo + 10% Gaussian uncertainty");
-#Data
-DATA=charges_dec
-np.save("unfolding/DATA.npy",DATA)
+# # a=plt.hist(np.mean(aux_MC,axis=0),200,[0,1000],histtype="step",weights=np.ones(aux.shape[0])*charges_dec.shape[0]/aux.shape[0],label="G4 montecarlo + 10% Gaussian uncertainty");
+# plt.plot((a[1][1:]+a[1][:-1])/2,np.mean(aux_MC,axis=0),label="G4 montecarlo + 10% Gaussian uncertainty");
+# #Data
+# DATA=charges_dec
+# np.save("unfolding/DATA.npy",DATA)
 
-np.save("unfolding/MC_reco.npy",[np.mean(aux_MC,axis=0) , ((a[1][1:]+a[1][:-1])/2)])
+# np.save("unfolding/MC_reco.npy",[np.mean(aux_MC,axis=0) , ((a[1][1:]+a[1][:-1])/2)])
 
-b=np.histogram(DATA,200,[0,1000])
+# b=np.histogram(DATA,200,[0,1000])
 
-plt.hist(DATA,200,[0,1000],histtype="step",label="Data");
+# plt.hist(DATA,200,[0,1000],histtype="step",label="Data");
 
-plt.plot(((a[1][1:]+a[1][:-1])/2)[35:80],np.mean(aux_MC,axis=0)[35:80],"--",color="tab:red",label="Best fit");
-plt.legend(loc="lower right")
-plt.xlabel("Charge [PE]")
-plt.ylabel("Counts [events]")
+# plt.plot(((a[1][1:]+a[1][:-1])/2)[35:80],np.mean(aux_MC,axis=0)[35:80],"--",color="tab:red",label="Best fit");
+# plt.legend(loc="lower right")
+# plt.xlabel("Charge [PE]")
+# plt.ylabel("Counts [events]")
 
-# plt.semilogy()
-plt.xlim([100,5e2])
-# plt.ylim([1,5e3])
+# # plt.semilogy()
+# plt.xlim([100,5e2])
+# # plt.ylim([1,5e3])
 
-#chi2 tests
+# #chi2 tests
 
-def chisq_scan(npixels=100):
+# def chisq_scan(npixels=100):
     
-    def chisq(a,b,dof=1):
-        return np.sum((a-b)**2/b)/dof
+#     def chisq(a,b,dof=1):
+#         return np.sum((a-b)**2/b)/dof
     
-    aux_chisq=[]
-    aux_eff=[]
+#     aux_chisq=[]
+#     aux_eff=[]
 
-    RANGE=100
-    elec_res=0.10
-    effi_range=np.linspace(0.0172,0.0186 ,npixels)
+#     RANGE=100
+#     elec_res=0.10
+#     effi_range=np.linspace(0.0172,0.0186 ,npixels)
 
-    for efficiency in effi_range:
+#     for efficiency in effi_range:
 
-        aux_poiss=np.zeros(nhits[sensor==sen].shape[0])
+#         aux_poiss=np.zeros(nhits[sensor==sen].shape[0])
 
-        z=0
-        for nphot in nhits[sensor==sen]:
-            ## poisson distribution, faster but less accurate for low number of photons (the tails are not well reproduced)
-            lambda_ = efficiency * nphot
-            aux_poiss[z]   =np.random.poisson(lambda_)
-            z+=1;
+#         z=0
+#         for nphot in nhits[sensor==sen]:
+#             ## poisson distribution, faster but less accurate for low number of photons (the tails are not well reproduced)
+#             lambda_ = efficiency * nphot
+#             aux_poiss[z]   =np.random.poisson(lambda_)
+#             z+=1;
 
 
-        aux_MC=np.zeros((RANGE,b[0].shape[0]))
-        for i in range(RANGE):
-            a=np.histogram(aux_poiss*np.random.normal(1, elec_res, int(MC.shape[0])),int(200),[0,1000],weights=np.ones(aux.shape[0])*charges_dec.shape[0]/aux.shape[0]);
-            aux_MC[i,:]=a[0]
+#         aux_MC=np.zeros((RANGE,b[0].shape[0]))
+#         for i in range(RANGE):
+#             a=np.histogram(aux_poiss*np.random.normal(1, elec_res, int(MC.shape[0])),int(200),[0,1000],weights=np.ones(aux.shape[0])*charges_dec.shape[0]/aux.shape[0]);
+#             aux_MC[i,:]=a[0]
             
-        x=np.mean(aux_MC,axis=0) [35:80]
-        y=b[0]                   [35:80]
-        aux_chisq.append(chisq(y,x,dof=len(x)-1))
-        aux_eff.append(efficiency)
-    return np.array(aux_chisq),np.array(aux_eff)
+#         x=np.mean(aux_MC,axis=0) [35:80]
+#         y=b[0]                   [35:80]
+#         aux_chisq.append(chisq(y,x,dof=len(x)-1))
+#         aux_eff.append(efficiency)
+#     return np.array(aux_chisq),np.array(aux_eff)
 
-aux_chisq,aux_eff=chisq_scan()
-np.mean(DATA)
+# aux_chisq,aux_eff=chisq_scan()
+# np.mean(DATA)
 
-plt.plot(aux_eff*100,aux_chisq)
-print(aux_eff[np.argmin(aux_chisq)])
-print(aux_chisq[np.argmin(aux_chisq)])
-plt.ylabel(r"$\chi^2$/d.o.f.")
-plt.xlabel("Efficiency [%]")
+# plt.plot(aux_eff*100,aux_chisq)
+# print(aux_eff[np.argmin(aux_chisq)])
+# print(aux_chisq[np.argmin(aux_chisq)])
+# plt.ylabel(r"$\chi^2$/d.o.f.")
+# plt.xlabel("Efficiency [%]")
 
-threshold=4
-minus=aux_eff[np.argmin(aux_chisq)]-aux_eff[np.min(aux_chisq)+threshold>aux_chisq][0]
-plus =aux_eff[np.min(aux_chisq)+threshold>aux_chisq][-1] - aux_eff[np.argmin(aux_chisq)]
+# threshold=4
+# minus=aux_eff[np.argmin(aux_chisq)]-aux_eff[np.min(aux_chisq)+threshold>aux_chisq][0]
+# plus =aux_eff[np.min(aux_chisq)+threshold>aux_chisq][-1] - aux_eff[np.argmin(aux_chisq)]
 
-plt.text(1.75,20, r'$\chi^2_{min}$/d.o.f. = '+str(round(aux_chisq[np.argmin(aux_chisq)],2)), fontsize=15)
-plt.text(1.75,15, r'$\epsilon_{opt}$ = '+str(round(aux_eff[np.argmin(aux_chisq)]*100,3))+"$\pm$ "+str(round((minus+plus)/2*100,3))+"%", fontsize=15)
+# plt.text(1.75,20, r'$\chi^2_{min}$/d.o.f. = '+str(round(aux_chisq[np.argmin(aux_chisq)],2)), fontsize=15)
+# plt.text(1.75,15, r'$\epsilon_{opt}$ = '+str(round(aux_eff[np.argmin(aux_chisq)]*100,3))+"$\pm$ "+str(round((minus+plus)/2*100,3))+"%", fontsize=15)
 
-print(minus,plus)
-print(aux_eff[np.argmin(aux_chisq)])
-print(aux_elec[np.argmin(aux_chisq)])
+# print(minus,plus)
+# print(aux_eff[np.argmin(aux_chisq)])
+# print(aux_elec[np.argmin(aux_chisq)])
 
-charges_dec=np.load("Daphne_9OV_alpha_source_spectrum.npy")
-np.mean(charges_dec)
+# charges_dec=np.load("Daphne_9OV_alpha_source_spectrum.npy")
+# np.mean(charges_dec)
