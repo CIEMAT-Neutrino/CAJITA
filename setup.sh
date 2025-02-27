@@ -44,7 +44,7 @@ else
             break
             ;;
         "No")
-            break
+            return 0
             ;;
         *) echo "Invalid option" ;;
         esac
