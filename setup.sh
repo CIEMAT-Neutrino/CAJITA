@@ -5,8 +5,7 @@ echo -e "\e[31mWARNING: Only run this script from main directory!\e[0m"
 read -p "Are you sure you want to continue? (y/n) " -n 1 -r
 
 # If the user did not answer with y, exit the script
-if [[ ! $REPLY =~ ^[Yy]$ ]]
-then
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 1
 fi
 
@@ -21,7 +20,15 @@ echo -e "\e[32mCreated directory for results\e[0m"
 # Check if directory data exists
 if [ ! -d "data" ]; then
     mkdir data
-    sshfs $USER@gaeuidc1.ciemat.es:/pc/choozdsk01/DATA/CAJITA/ data
+    sshfs ${USER}@gaeuidc1.ciemat.es:/pc/choozdsk01/DATA/CAJITA/output data
     echo -e "\e[32mCreated directory for data\e[0m"
+else
+    # If directory data exists, check if it is empty
+    if [ -z "$(ls -A data)" ]; then
+        sshfs ${USER}@gaeuidc1.ciemat.es:/pc/choozdsk01/DATA/CAJITA/output data
+        echo -e "\e[32mCreated directory for data\e[0m"
+    else
+        echo -e "\e[32mData directory already exists and is not empty\e[0m"
+    fi
 fi
 echo -e "\e[32mSetup complete!\e[0m"

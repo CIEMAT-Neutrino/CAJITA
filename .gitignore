@@ -1,4 +1,5 @@
 analysis/*.ipynb
+analysis/*.pyc
 build/*
 data/*
 scratch/*
