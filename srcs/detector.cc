@@ -2,29 +2,28 @@
 
 MySensitiveDetector::MySensitiveDetector(G4String name) : G4VSensitiveDetector(name)
 {
-    // Adding efficiency to our detectors:
-    quEff = new G4PhysicsOrderedFreeVector();
-
     std::ifstream datafile;
-    datafile.open("bin/PMT_qeff.dat"); //file with qefficiency given in the datasheet
+    datafile.open("PMT_qeff.dat"); //file with qefficiency given in the datasheet
 
-    while(1)
+    if (!datafile)
     {
+        G4cout << "Error opening file. Make sure your efficiencies are correctly included." << G4endl;
+    } else {
+        std::cout << "File opened successfully.\n";
+        // Adding efficiency to our detectors:
+        quEff = new G4PhysicsOrderedFreeVector();
+
         G4double wlen, queff;
+        while(datafile >> wlen >> queff)
+        {
+            quEff->InsertValues(wlen, queff/100.); //Valores en porcentaje
+            // G4cout << wlen << " " << queff << std::endl; //Checking everything DEBUG
+        }
 
-        datafile >> wlen >> queff;
-
-        if(datafile.eof())
-            break;
-
-        // G4cout << wlen << " " << queff << std::endl; //Checking everyhting OK
-
-        quEff->InsertValues(wlen, queff/100.); //Valores en porcentaje
+        datafile.close();
+        quEff->SetSpline(false); //hacemos interpolacion lineal entre valores porque da menos problemas en 1a aproximacion
     }
 
-    datafile.close();
-
-    quEff->SetSpline(false); //hacemos interpolacion lineal entre valores porque da menos problemas en 1a aproximacion
 }
 
 MySensitiveDetector::~MySensitiveDetector()
