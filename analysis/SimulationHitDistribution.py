@@ -1,20 +1,16 @@
 from __init__ import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-d', '--directory', default="/pc/choozdsk01/DATA/CAJITA/supercell_v2/", help="Folder path")
+parser.add_argument('-d', '--directory', default="../data/supercell_v2", help="Folder path")
 parser.add_argument('-s', '--sensors', default=["Arapuca","SiPM1","SiPM2"], nargs='+', help="List of sensor names")
-parser.add_argument('-f', '--file', default="supercell_box5_SiPM2.5.root", help="File name")
+parser.add_argument('-f', '--file', default="supercell_v2.root", help="File name")
+parser.add_argument('--save', action='store_true', help="Save figures")
 parser.add_argument('--debug', action='store_true', help="Enable debug mode")
 args = parser.parse_args()
 
-folder = args.directory
-sensors = args.sensors
-my_file = args.file
-debug = args.debug
-
 # Extract branches
 print("Extracting branches...")
-my_data = extract_branches(folder=folder, root_file=my_file, sensors=sensors, debug=debug)
+my_data = extract_branches(folder=args.directory, root_file=args.file, sensors=args.sensors, debug=args.debug)
 
 filename = list(my_data.keys())[0]
 data = {
@@ -47,4 +43,8 @@ fig.update_xaxes(showline=True, showgrid=True, mirror=True)
 fig.update_yaxes(title_text="Norm (a.u.)", ticks="outside", showline=True, showgrid=True, mirror=True)
 fig.show()
 # Save figure
-fig.write_image(f'../results/images/{filename.split(".root")[0]}_AccumHitsDistribution.png')
+if args.save:
+  print(f"Saving figure to ../results/images/{filename.split('.root')[0]}_AccumHitsDistribution.png")
+  if not os.path.exists('../results/images/'):
+    os.makedirs('../results/images/')
+  fig.write_image(f"../results/images/{filename.split('.root')[0]}_AccumHitsDistribution.png", width=800, height=800, scale=2)
