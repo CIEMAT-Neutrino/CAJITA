@@ -2,8 +2,9 @@ import uproot,os,sys
 import argparse
 import numpy             as np
 import pandas            as pd
-import matplotlib.pyplot as plt
+import awkward           as ak
 import plotly.express    as px
+import matplotlib.pyplot as plt
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 
@@ -11,13 +12,31 @@ from plotly.subplots import make_subplots
 plt.rcParams.update({'font.size': 14})
 
 def extract_branches(folder, root_file,sensors, branches={"Photons":["X","Y","Z","Phi","Theta","Sensor"],"Hits":["Sensor","AccumHits"]}, debug=False):
-    opened_file = uproot.open(folder+root_file)
+    if not os.path.isdir(folder):
+        print(f"ERROR: Folder {folder} does not exist.")
+        sys.exit(1)
+    if folder.endswith("/"): folder = folder[:-1]  # Remove trailing slash if present
+    if not os.path.isfile(f"{folder}/{root_file}"):
+        print(f"ERROR: File {root_file} does not exist in folder {folder}.")
+        sys.exit(1)
+    opened_file = uproot.open(f"{folder}/{root_file}")
     branch_dict = dict.fromkeys(branches.keys())
     my_data = dict.fromkeys([root_file]); my_data[root_file] = dict.fromkeys(sensors)
     for k,key in enumerate(branch_dict):
         branch_dict[key] = {}
         for branch in branches[key]: 
-            branch_dict[key][branch] = opened_file[key][branch].array().to_numpy();
+            if debug: print(f"Extracting branch {branch} from {key} in {root_file}")
+            if key not in opened_file:
+                print(f"ERROR: Branch {key} not found in file {root_file}. Available branches: {opened_file.keys()}")
+                raise KeyError
+            if debug:
+                # Print type of the branch
+                print(f"\tBranch {branch} type: {type(opened_file[key][branch])}")
+            branch_dict[key][branch] = ak.to_numpy(opened_file[key][branch].array())
+            if debug:
+                # Print shape of the branch
+                print(f"\tBranch {branch} saved as: {type(branch_dict[key][branch])}")
+
     for s,sensor in enumerate(sensors):
         my_data[root_file][sensor] = {}
         for k,key in enumerate(branch_dict):
@@ -43,7 +62,7 @@ def compute_real_angles(my_data, sensors_info, debug=False):
             my_data[geo_file][sensor]["FixedIncidenceAngleDegree"] = my_data[geo_file][sensor]["FixedIncidenceAngle"]*180/np.pi
     if debug: print(sensors_info)
 
-def plot_variable_distributions(my_data,variable,stats=(False,False),bins=100,probability=False,density=False,percentile=(0.01,0.99),log=(False,False),dpi=50,save=False,debug=False):
+def plot_variable_distributions(my_data,variable,stats=(False,False),bins=100,probability=False,density=False,percentile=(0.01,0.99),log=(False,False),figsize=(10,10),dpi=300,save=False,debug=False):
     fig = plt.figure(dpi=dpi)
     for my_file in my_data.keys():
         plt.title(my_file.replace(".root",""))
@@ -62,37 +81,41 @@ def plot_variable_distributions(my_data,variable,stats=(False,False),bins=100,pr
                 selected_data = hist_data[int(percentile[0]*len(hist_data)):int(percentile[1]*len(hist_data))]
                 if debug: print("%s after percentile cut: %i"%(variable,len(selected_data)))
                 # Compute histogram
-                h, bins = np.histogram(selected_data,bins,density=density)
-                if probability and not density: h = h/np.sum(h)
-                bin_centers = (bins[1:]+bins[:-1])/2
-                # Compute stats
+                h, bin_edges = np.histogram(selected_data,bins,density=density)
+                if probability and not density:
+                    h = h/np.sum(h)
+
                 mean = np.mean(selected_data)
                 std  = np.std(selected_data)
-                # Plot
-                plt.bar(bin_centers,h,width=(bins[1]-bins[0]),alpha=.5,label=f"{sensor}: {mean:.2f} +- {std:.2f}")
+                bin_centers = 0.5*(bin_edges[1:]+bin_edges[:-1])
+                plt.hist(bin_centers, bins=bin_edges, weights=h, histtype="step", color="C"+str(list(my_data[my_file].keys()).index(sensor)), label=sensor+" (Mean %.0f +- %.0f)"%(mean, std))                
+                
                 if stats[0]:
-                    print("Mean %s: %0.2f +- %0.2f"%(sensor,mean,std))
-                    # Save stats to file
-                    f.write("Mean %s: %0.2f +- %0.2f\n"%(sensor,mean,std))
+                    print("Mean %s: %.0f +- %.0f"%(sensor,mean,std))
+                    f.write("Mean %s: %.0f +- %.0f\n"%(sensor,mean,std))
 
                 if stats[1]:
-                    plt.axvline(mean,color="green",label="Mean %0.2f"%mean)
-                    plt.axvline(mean+std,linestyle="--",color="green",label="Std %0.2f"%std)
-                    plt.axvline(mean-std,linestyle="--",color="green",label="Std %0.2f"%std)
+                    plt.axvline(mean,color="green",label="Mean %.0f"%mean)
+                    plt.axvline(mean+std,linestyle="--",color="green",label="Std %.0f"%std)
+                    plt.axvline(mean-std,linestyle="--",color="green",label="Std %.0f"%std)
         
         # Plot settings
         plt.xlabel(variable)
         if density: plt.ylabel("Density")
         elif probability: plt.ylabel("Probability")
-        else      : plt.ylabel("Counts")
+        else: plt.ylabel("Counts")
         if log[0]: plt.semilogx()
         if log[1]: plt.semilogy()
+        # Figuresize
+        if figsize[0] is not None and figsize[1] is not None:
+            fig.set_figwidth(figsize[0])
+            fig.set_figheight(figsize[1])
         plt.legend()
         plt.grid()
         # Save figure
         if not os.path.isdir("../results/images/"): os.mkdir("../results/images/")
         if save: 
-            plt.savefig("../results/images/"+my_file.split('.root')[0]+'_'+variable+".png")
+            plt.savefig("../results/images/"+my_file.split('.root')[0]+'_'+variable+".png", bbox_inches='tight', dpi=dpi)
             if debug: print("Saving figure to ../results/images/"+my_file.split('.root')[0]+'_'+variable+".png")
     return fig
 
