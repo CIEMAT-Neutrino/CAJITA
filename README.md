@@ -1,8 +1,9 @@
 # CAJITA
 
-Geant4 simulation repository to optimize IR02 setups. 
+Geant4 simulation repository to optimize IR02 setups.
 
 If you need a reminder on how to run just type:
+
 ```bash
 source setup.sh
 cd srcs && ./scripts/run_build.sh <geometry>
@@ -98,6 +99,7 @@ You can also find some of the geometries used in the IR02 setups:
 You can find additional ```.json``` files corresponding to tests and productions in ```/pc/choozdsk01/DATA/CAJITA/configs```.
 
 For example:
+
 * ```megacell_v1.json``` -> measurements of August 2023 of the MeggaCell DUNE-VD
 * ```megacell_v2.json``` -> measurements from October 2023 of the MeggaCell DUNE-VD (nueva cajita; to be run as option3)
 
@@ -119,7 +121,6 @@ If you have chosen to run the simulation with the multithreading option you will
 ```bash
 hadd -k COMBINED_ALL_OUTPUTS.root COMMOM_NAME_t*
 ```
-
 
 ## LEGACY SUMMARY
 
@@ -151,11 +152,11 @@ hadd -k COMBINED_ALL_OUTPUTS.root COMMOM_NAME_t*
 
   7.- Automatizating the code
 
-  * ```vis.mac``` for visualization commands -> when creating ```vis.mac``` it is not in ```/build``` and it is not found, we move all the macro file to the right directory without including absolute paths -> look in ```CMakeLists.txt```.
+* ```vis.mac``` for visualization commands -> when creating ```vis.mac``` it is not in ```/build``` and it is not found, we move all the macro file to the right directory without including absolute paths -> look in ```CMakeLists.txt```.
 
     <details>
       <summary>vis.mac</summary>
-        
+
       ```mac
       #visualization properties
       /run/initialize
@@ -173,12 +174,12 @@ hadd -k COMBINED_ALL_OUTPUTS.root COMMOM_NAME_t*
       ```
 
     </details>
-    
-  * ```run.mac``` -> change the momentum for each particle creation. Changes in ```box1.cc``` to accept command line inputs as files (Execute as: ```>>./box1 *.mac```).
+
+* ```run.mac``` -> change the momentum for each particle creation. Changes in ```box1.cc``` to accept command line inputs as files (Execute as: ```>>./box1 *.mac```).
 
     <details>
       <summary>run.mac</summary>
-        
+
       ```mac
       #initialise the geometry and the physics tables
     /run/initialize
@@ -194,87 +195,87 @@ hadd -k COMBINED_ALL_OUTPUTS.root COMMOM_NAME_t*
 
     </details>
 
-  * ```*.dat``` -> store quantum/photon detection efficiencies for the different detectors.
+* ```*.dat``` -> store quantum/photon detection efficiencies for the different detectors.
     <details>
       <summary>PMT_qeff.dat</summary>
-        
+
       ```dat
       116.4   18.72
-      118.0	20.26
-      121.6	23.04
-      125.4	23.39
-      135.4	26.46
-      140.3	26.99
-      144.1	26.85
-      148.7	26.33
-      154.5	23.32
-      160.8	28.00
-      164.8	29.64
-      170.0	31.51
-      175.0	33.31
-      182.3	34.70
-      187.9	33.85
-      193.7	32.18
-      200.0	31.52
-      210.0	30.18
-      220.0	28.87
-      230.0	28.42
-      240.0	28.54
-      250.0	28.90
-      260.0	28.54
-      270.0	28.39
-      280.0	28.80
-      290.0	29.23
-      300.0	29.75
-      310.0	30.10
-      320.0	30.22
-      330.0	30.13
-      340.0	29.96
-      350.0	29.74
-      360.0	29.32
-      370.0	28.81
-      380.0	28.65
-      390.0	28.27
-      400.0	27.70
-      410.0	27.04
-      420.0	26.33
-      430.0	25.52
-      440.0	24.64
-      450.0	23.60
-      460.0	22.41
-      470.0	21.15
-      480.0	20.01
-      490.0	18.99
-      500.0	18.05
-      510.0	17.07
-      520.0	15.95
-      530.0	14.63
-      540.0	13.18
-      550.0	11.71
-      560.0	10.28
-      570.0	8.92
-      580.0	7.96
-      590.0	6.64
-      600.0	5.75
-      610.0	5.01
-      620.0	4.36
-      630.0	3.76
-      640.0	3.20
-      650.0	2.68
-      660.0	2.20
-      670.0	1.77
-      680.0	1.38
-      690.0	1.06
-      700.0	0.79
-      710.0	0.57
-      720.0	0.40
-      730.0	0.27
-      740.0	0.18
-      750.0	0.12
-      760.0	0.07
-      770.0	0.05
-      780.0	0.03
-      790.0	0.02
+      118.0 20.26
+      121.6 23.04
+      125.4 23.39
+      135.4 26.46
+      140.3 26.99
+      144.1 26.85
+      148.7 26.33
+      154.5 23.32
+      160.8 28.00
+      164.8 29.64
+      170.0 31.51
+      175.0 33.31
+      182.3 34.70
+      187.9 33.85
+      193.7 32.18
+      200.0 31.52
+      210.0 30.18
+      220.0 28.87
+      230.0 28.42
+      240.0 28.54
+      250.0 28.90
+      260.0 28.54
+      270.0 28.39
+      280.0 28.80
+      290.0 29.23
+      300.0 29.75
+      310.0 30.10
+      320.0 30.22
+      330.0 30.13
+      340.0 29.96
+      350.0 29.74
+      360.0 29.32
+      370.0 28.81
+      380.0 28.65
+      390.0 28.27
+      400.0 27.70
+      410.0 27.04
+      420.0 26.33
+      430.0 25.52
+      440.0 24.64
+      450.0 23.60
+      460.0 22.41
+      470.0 21.15
+      480.0 20.01
+      490.0 18.99
+      500.0 18.05
+      510.0 17.07
+      520.0 15.95
+      530.0 14.63
+      540.0 13.18
+      550.0 11.71
+      560.0 10.28
+      570.0 8.92
+      580.0 7.96
+      590.0 6.64
+      600.0 5.75
+      610.0 5.01
+      620.0 4.36
+      630.0 3.76
+      640.0 3.20
+      650.0 2.68
+      660.0 2.20
+      670.0 1.77
+      680.0 1.38
+      690.0 1.06
+      700.0 0.79
+      710.0 0.57
+      720.0 0.40
+      730.0 0.27
+      740.0 0.18
+      750.0 0.12
+      760.0 0.07
+      770.0 0.05
+      780.0 0.03
+      790.0 0.02
       ```
 
     </details>
@@ -285,23 +286,24 @@ hadd -k COMBINED_ALL_OUTPUTS.root COMMOM_NAME_t*
   We would need to include the energy deposition calculation that can be also stored in the NTuple.
   We want to show Scintillation LAr light (see [G4Scintillation](https://apc.u-paris.fr/~franco/g4doxy/html/classG4Scintillation.html))
 
-
-
 We found useful this scheme from the manual to understand reflections parameters in a metal interface:
 
 ![Captura de pantalla de 2025-02-27 12-22-02](https://github.com/user-attachments/assets/a4429362-70f1-4c27-8875-75d218de56ae)
 
-
 </details>
 
-
+## Additional Information
 <details>
-<summary> LEARNED LESSONS </summary>
+<summary>Click to expand</summary>
 
+<!-- Content goes here -->
+
+</details>
+## LEARNED LESSONS
 
   We went through different options for running the code until we reach the current configuration. We can summarize this in three options of configuring the geometry that can be run as:
 
-  ### OPTION 1: no json. Source information in a ```.mac```. Compile each time to update changes in construction.
+### OPTION 1: no json. Source information in a ```.mac```. Compile each time to update changes in construction
 
   ```bash
   ./build/box1 configs/option1.mac data/output.root
@@ -309,7 +311,7 @@ We found useful this scheme from the manual to understand reflections parameters
 
   <details>
   <summary>configs/option1.mac</summary>
-      
+
   ```mac
   #initialise the geometry and the physics tables
   /run/initialize
@@ -523,6 +525,7 @@ We found useful this scheme from the manual to understand reflections parameters
 
 
   ```
+
   </details>
 
   <details>
@@ -587,13 +590,15 @@ We found useful this scheme from the manual to understand reflections parameters
 
 
   ```
+
   </details>
 
-  ### OPTION 2: fixed positions given in construcction.cc (```sbnd_pds_mapping.json```). Source information by ```.mac```
+### OPTION 2: fixed positions given in construcction.cc (```sbnd_pds_mapping.json```). Source information by ```.mac```
 
   ```bash
   ./build/box1 configs/option2.mac data/output.root
   ```
+
   You can pick the Geant4 configurations with the following examples:
   <details>
   <summary>configs/option2.mac</summary>
@@ -669,7 +674,6 @@ We found useful this scheme from the manual to understand reflections parameters
   ```
 
   </details>
-
 
   <details>
   <summary>sbnd_pds_mapping.json</summary>
@@ -4422,6 +4426,7 @@ We found useful this scheme from the manual to understand reflections parameters
   }
 ]
   ```
+
   </details>
 
   <details>
@@ -4623,6 +4628,7 @@ We found useful this scheme from the manual to understand reflections parameters
 
 
   ```
+
   </details>
 
   <details>
@@ -4688,12 +4694,11 @@ We found useful this scheme from the manual to understand reflections parameters
 
   </details>
 
-
-  ### OPTION 3: General ```.json``` including positions for sensors + Geant4 information
+### OPTION 3: General ```.json``` including positions for sensors + Geant4 information
 
   <details>
   <summary>configs/option3.json</summary>
-    
+
   ```json
   {
     "comments":"Position units given in mm",
@@ -5147,11 +5152,7 @@ We found useful this scheme from the manual to understand reflections parameters
 
   </details>
 
-
-
 </details>
-
-
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -5195,8 +5196,8 @@ We found useful this scheme from the manual to understand reflections parameters
 
 [MIT](https://choosealicense.com/licenses/mit/)
 
-## Authors (alphabetical order, please insert your name here if you contribute to this project)
+## Authors (please insert your name here if you contribute to this project)
 
-* [**Alvárez-Garrote, Rodrigo**](https://github.com/rodralva)
 * [**Pérez-Molina, Laura**](https://github.com/LauPM)
+* [**Alvárez-Garrote, Rodrigo**](https://github.com/rodralva)
 * [**Manthey Corchado, Sergio**](https://github.com/mantheys)
