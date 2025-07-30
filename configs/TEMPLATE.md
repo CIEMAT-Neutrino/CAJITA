@@ -1,4 +1,4 @@
-{
+# This file contains the template information for the json files used in the simulations
 
 ## No comments are accepted in json files. Use this as reference
 
