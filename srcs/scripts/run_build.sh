@@ -27,6 +27,6 @@ cp geometries/$geometry_file.cc construction.cc
 cp geometries/$geometry_file.hh construction.hh || { echo -e "\e[31m\nError: Failed to copy files. Exiting.\e[0m"; exit 1; }
 
 # Run CMake and build
-cmake -DGeant4_DIR=/cvmfs/sft.cern.ch/lcg/releases/Geant4/10.07.p01-daa34/x86_64-centos7-gcc8-opt -B ../build/
+# cmake -DGeant4_DIR=/cvmfs/sft.cern.ch/lcg/releases/Geant4/10.07.p01-daa34/x86_64-centos7-gcc8-opt -B ../build/
 cmake -DGeant4_DIR=/cvmfs/sft.cern.ch/lcg/releases/Geant4/10.07.p01-daa34/x86_64-centos7-gcc8-opt -B ../build/ -DGEANT4_BUILD_MULTITHREADED=ON
 cmake --build ../build/ --config Release -- -j 8
