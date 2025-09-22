@@ -16,7 +16,7 @@ filename = list(my_data.keys())[0]
 data = {
   "SiPM1": my_data[filename]["SiPM1"]["AccumHits"],
   "SiPM2": my_data[filename]["SiPM2"]["AccumHits"],
-  "COMBI": my_data[filename]["SiPM1"]["AccumHits"] + my_data[filename]["SiPM2"]["AccumHits"],
+  # "COMBI": my_data[filename]["SiPM1"]["AccumHits"] + my_data[filename]["SiPM2"]["AccumHits"],
   "XA": my_data[filename]["Arapuca"]["AccumHits"]
 }
 
@@ -37,7 +37,8 @@ fig.update_layout(title_text=filename,
   barmode="overlay", bargap=0, template="presentation", height=800, width=800, showlegend=True,
   xaxis2_title_text="#Photons",
   legend_title_text="Sensor",
-  legend=dict(x=.01, y=.01, xanchor="left", yanchor="bottom", orientation="v"))
+  # legend=dict(x=.01, y=.01, xanchor="left", yanchor="bottom", orientation="v")
+  )
 
 fig.update_xaxes(showline=True, showgrid=True, mirror=True)
 fig.update_yaxes(title_text="Norm (a.u.)", ticks="outside", showline=True, showgrid=True, mirror=True)

@@ -44,7 +44,7 @@ def extract_branches(folder, root_file,sensors, branches={"Photons":["X","Y","Z"
                 my_data[root_file][sensor][branch] = branch_dict[key][branch][branch_dict[key]["Sensor"]==s]
     return my_data
 
-def compute_real_angles(my_data, sensors_info, debug=False):
+def compute_real_angles(my_data, sensors_info, debug:bool=False):
     for geo_file in my_data.keys():
         for sensor in my_data[geo_file].keys():
             phi   = my_data[geo_file][sensor]["Phi"]
@@ -62,12 +62,14 @@ def compute_real_angles(my_data, sensors_info, debug=False):
             my_data[geo_file][sensor]["FixedIncidenceAngleDegree"] = my_data[geo_file][sensor]["FixedIncidenceAngle"]*180/np.pi
     if debug: print(sensors_info)
 
-def plot_variable_distributions(my_data,variable,stats=(False,False),bins=100,probability=False,density=False,percentile=(0.01,0.99),log=(False,False),figsize=(10,10),dpi=300,save=False,debug=False):
+def plot_variable_distributions(my_data,variable,stats=(False,False),bins=50,probability=False,density=False,limits=(1,None),percentile=(0.01,0.99),log=(False,False),figsize=(10,10),dpi=300,save=False,debug=False):
     fig = plt.figure(dpi=dpi)
     for my_file in my_data.keys():
         plt.title(my_file.replace(".root",""))
         if not os.path.isdir("../results/stats/"): os.mkdir("../results/stats/")
         with open("../results/stats/"+my_file.split('.root')[0]+'_'+variable+"_stats.txt","w") as f:
+            if limits[0] is not None:
+                plt.axvline(limits[0],color="grey",linestyle="--",label="Min limit %.0f"%limits[0])
             for sensor in my_data[my_file]:
                 # Check if variable exists
                 try: my_data[my_file][sensor][variable]
@@ -77,18 +79,24 @@ def plot_variable_distributions(my_data,variable,stats=(False,False),bins=100,pr
                     raise KeyError
                 # Compute percentile
                 hist_data = np.sort(my_data[my_file][sensor][variable])
+                if limits[0] is not None: hist_data = hist_data[hist_data>=limits[0]]
+                if limits[1] is not None: hist_data = hist_data[hist_data<=limits[1]]
                 if debug: print("%s: %i"%(variable,len(my_data[my_file][sensor][variable])))
                 selected_data = hist_data[int(percentile[0]*len(hist_data)):int(percentile[1]*len(hist_data))]
                 if debug: print("%s after percentile cut: %i"%(variable,len(selected_data)))
                 # Compute histogram
-                h, bin_edges = np.histogram(selected_data,bins,density=density)
+                if variable == "AccumHits":
+                    h, bin_edges = np.histogram(selected_data,np.arange(0, np.max(selected_data)+bins, bins),density=density)
+                else:
+                    h, bin_edges = np.histogram(selected_data,bins,density=density)
                 if probability and not density:
                     h = h/np.sum(h)
 
                 mean = np.mean(selected_data)
                 std  = np.std(selected_data)
+                median = np.median(selected_data)
                 bin_centers = 0.5*(bin_edges[1:]+bin_edges[:-1])
-                plt.hist(bin_centers, bins=bin_edges, weights=h, histtype="step", color="C"+str(list(my_data[my_file].keys()).index(sensor)), label=sensor+" (Mean %.0f +- %.0f)"%(mean, std))                
+                plt.hist(bin_centers, bins=bin_edges, weights=h, histtype="step", color="C"+str(list(my_data[my_file].keys()).index(sensor)), label=sensor+" (%.0f +- %.0f)"%(mean, std), lw=1.5)    
                 
                 if stats[0]:
                     print("Mean %s: %.0f +- %.0f"%(sensor,mean,std))
@@ -144,18 +152,18 @@ def plot_photon_density(my_data, surface, bins=100, density=False, figsize=(None
         if debug: print("Saving figure to ../results/images/"+my_file.split('.root')[0]+"_PhotonDensity.png")
     return fig  
 
-def plot_acumhits(my_data, dpi=50, bins=[100,35,35], semilogy=False, debug=False):
+def plot_acumhits(my_data, bins=[100,35,35], semilogy=False, dpi=50, debug=False):
     for my_file in my_data:
         means = [];sensors = []
         for s,sensor in enumerate(my_data[my_file]): mean = np.mean(my_data[my_file][sensor]["AccumHits"]); means.append(mean); sensors.append(sensor)
         
         if np.any(np.array(means/means[0]) < 0.1) or np.any(np.array(means/means[0]) > 10): 
             fig, axs = plt.subplots(1,2,sharey=True,dpi=dpi); 
-            axs[1].hist(my_data[my_file][sensors[0]]["AccumHits"], bins[0], alpha=0.5, histtype="step", color="C"+str(0),label=sensors[0]+" (Mean %0.2f)"%means[0], density=True)
+            axs[1].hist(my_data[my_file][sensors[0]]["AccumHits"], bins[0], alpha=0.5, histtype="step", color="C"+str(0),label=sensors[0]+" (%0.2f)"%means[0], density=True)
             axs[1].set_xlim(means[0]-means[0]*0.8,means[0]+means[0]*1.1)
             if semilogy: axs[1].semilogy()
             for diff in list(np.where(np.array(means/means[0]) < 0.1)[0]) + list(np.where(np.array(means/means[0]) > 10)[0]):
-                axs[0].hist(my_data[my_file][sensors[diff]]["AccumHits"], bins[diff], alpha=0.5, histtype="step", color="C"+str(diff),label=sensors[diff]+" (Mean %0.2f)"%means[diff], density=True)
+                axs[0].hist(my_data[my_file][sensors[diff]]["AccumHits"], bins[diff], alpha=0.5, histtype="step", color="C"+str(diff),label=sensors[diff]+" (%0.2f)"%means[diff], density=True)
                 axs[0].set_xlim(means[diff]-means[diff]*0.8,means[diff]+means[diff]*1.6)
                 if semilogy: axs[0].semilogy()
             axs[1].set_xlabel("Accumulated hits")
@@ -167,7 +175,7 @@ def plot_acumhits(my_data, dpi=50, bins=[100,35,35], semilogy=False, debug=False
         else: 
             fig, axs = plt.subplots(1,1,sharey=True,dpi=dpi)
             for s,sensor in enumerate(my_data[my_file]):
-                axs.hist(my_data[my_file][sensor]["AccumHits"], bins[s], alpha=0.5, histtype="step", color="C"+str(s),label=sensor+" (Mean %0.2f)"%means[s], density=True)
+                axs.hist(my_data[my_file][sensor]["AccumHits"], bins[s], alpha=0.5, histtype="step", color="C"+str(s),label=sensor+" (%0.2f)"%means[s], density=True)
                 plt.xlabel("Accumulated hits")
                 plt.ylabel("Counts")
                 if semilogy: plt.semilogy()

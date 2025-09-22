@@ -14,7 +14,7 @@ for my_file in args.file: all_data.append(extract_branches(folder=args.directory
 
 # Add unitary normal vectors to each sensor
 sensors_info=dict()
-for sensor in sensors:
+for sensor in args.sensors:
     sensors_info[sensor]={}
     for my_file in args.file:
         sensors_info[sensor][my_file]={}
@@ -29,6 +29,9 @@ sensors_info["SiPM2"]["Area"]   = 6*6    # mm²
 
 for d,data in enumerate(all_data): compute_real_angles(my_data=data,sensors_info=sensors_info,debug=args.debug)
 
-for variable, bins, logy in zip(["X","Y","Z", "FixedIncidenceAngleDegree", "AccumHits"], [20,20,100,100,100], [True, True, True, False, False]):
+for variable, bins, logy in zip(["X","Y","Z", "FixedIncidenceAngleDegree", "AccumHits"], [20,20,100,100,50], [True, True, True, False, False]):
     for d, my_data in enumerate(all_data):
-            fig_ang = plot_variable_distributions(my_data,variable,stats=(True,False),bins=bins,probability=True,percentile=(0,1),log=(False,logy),save=args.save,debug=args.debug)
+        if variable == "AccumHits":
+            fig_ang = plot_variable_distributions(my_data,variable,stats=(True,False),bins=bins,probability=True,limits=(20,None),percentile=(0,1),log=(False,logy),save=args.save,debug=args.debug)
+        else:
+            fig_ang = plot_variable_distributions(my_data,variable,stats=(True,False),bins=bins,probability=True,limits=(1,None),percentile=(0,1),log=(False,logy),save=args.save,debug=args.debug)
