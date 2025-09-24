@@ -93,18 +93,18 @@ void MyDetectorConstruction::ConstructScintillator()
     // >> Set visAttributes for various components
     G4VisAttributes *logicSolidVisAtt    = new G4VisAttributes(G4Colour(0.46, 0.53, 0.6, 0.3));  // grey + alpha
     G4VisAttributes *logicHoleVisAtt     = new G4VisAttributes(G4Colour(0.0, 0.0, 0.0, 1));      // black + alpha
-    G4VisAttributes *logicSCVisAtt       = new G4VisAttributes(G4Colour(0.25, 0.88, 0.41, 0.5)); // green
+    G4VisAttributes *logicRefSiPMVisAtt  = new G4VisAttributes(G4Colour(0.25, 0.88, 0.41, 0.5)); // green
     G4VisAttributes *logicDetectorVisAtt = new G4VisAttributes(G4Colour(1, 0, 0, 1));         // red
     G4VisAttributes *logicFiltroVisAtt   = new G4VisAttributes(G4Colour(0.0, 0.0, 0.0, 0.7));
     G4VisAttributes *logicTestVisAtt     = new G4VisAttributes(G4Colour(0,0,1,0.5)); // blue
     logicSolidVisAtt->SetForceSolid(true);
     logicHoleVisAtt->SetForceWireframe(true);
     logicDetectorVisAtt->SetForceSolid(true);
-    logicSCVisAtt->SetForceSolid(true);
+    logicRefSiPMVisAtt->SetForceSolid(true);
     logicFiltroVisAtt->SetForceSolid(true);
     logicTestVisAtt->SetForceSolid(true);
 
-    // >> Matriz de rotacion para lo relativo a la SC
+    // >> Matriz de rotacion para lo relativo a la RefSiPM
     G4RotationMatrix *pRotX = new G4RotationMatrix();
     G4RotationMatrix *pRotY = new G4RotationMatrix();
     G4RotationMatrix *pRotZ = new G4RotationMatrix();
@@ -114,19 +114,34 @@ void MyDetectorConstruction::ConstructScintillator()
 
     // ---- Cajita (hueca) ----- //
     // >> Cajita Exterior (+grande, plastico)
+    G4RotationMatrix *rotCyl = new G4RotationMatrix();
+    G4SubtractionSolid *solidCajitaOut;
     std::vector<double> outter_dim,inner_dim;
     for (double coord:fjson.json_map["big_cajita"]["outter_dim"]) outter_dim.push_back(coord);
     for (double coord:fjson.json_map["big_cajita"]["inner_dim"])  inner_dim.push_back(coord);
-    auto outerBox = new G4Box("solidCajitaOut1", outter_dim[0] * mm, outter_dim[1] * mm, outter_dim[2] * mm);
-    auto innerBox = new G4Box("solidCajitaOut2", inner_dim[0]  * mm, inner_dim[1]  * mm, inner_dim[2]  * mm);
-    G4SubtractionSolid *solidCajitaOut = new G4SubtractionSolid("solidCajitaOut",outerBox,innerBox);
+    if (fjson.json_map["big_cajita"]["shape"] == "Box"){
+        auto outerBox = new G4Box("solidCajitaOut1", outter_dim[0] * mm, outter_dim[1] * mm, outter_dim[2] * mm);
+        auto innerBox = new G4Box("solidCajitaOut2", inner_dim[0]  * mm, inner_dim[1]  * mm, inner_dim[2]  * mm);
+        solidCajitaOut = new G4SubtractionSolid("solidCajitaOut",outerBox,innerBox);
+    }
+    else if (fjson.json_map["big_cajita"]["shape"] == "Cylinder") {
+        auto outerCyl = new G4Tubs("solidCajitaOut1", 0 * mm, outter_dim[0] * mm, outter_dim[1] * mm, 0 * deg, 360 * deg);
+        auto innerCyl = new G4Tubs("solidCajitaOut2", 0 * mm, inner_dim[0]  * mm, inner_dim[1]  * mm, 0 * deg, 360 * deg);
+        solidCajitaOut = new G4SubtractionSolid("solidCajitaOut",outerCyl,innerCyl);
+    }
+    else {
+        std::cerr << "Shape for big_cajita not recognized. Using Box as default." << std::endl;
+        auto outerBox = new G4Box("solidCajitaOut1", outter_dim[0] * mm, outter_dim[1] * mm, outter_dim[2] * mm);
+        auto innerBox = new G4Box("solidCajitaOut2", inner_dim[0]  * mm, inner_dim[1]  * mm, inner_dim[2]  * mm);
+        solidCajitaOut = new G4SubtractionSolid("solidCajitaOut",outerBox,innerBox);
+    }
     G4LogicalVolume *logicCajitaOut;
     G4OpticalSurface *refSurface;
 
-    refSurface = new G4OpticalSurface("refSurface");
-    refSurface->SetType(dielectric_metal);        // acero es un metal
-    refSurface->SetFinish(polished);              // acabado pulido
-    refSurface->SetModel(glisur);                 // modelo de reflexión	
+    refSurface = new G4OpticalSurface("refSurface"); // crea la superficie óptica
+    refSurface->SetType(dielectric_metal);           // acero es un metal
+    refSurface->SetFinish(polished);                 // acabado pulido
+    refSurface->SetModel(glisur);                    // modelo de reflexión	
     
     if (fjson.json_map["big_cajita"]["material"] == "Steel"){
         logicCajitaOut = new G4LogicalVolume(solidCajitaOut, Steel, "logicCajitaOut");
@@ -142,20 +157,30 @@ void MyDetectorConstruction::ConstructScintillator()
         logicCajitaOut = new G4LogicalVolume(solidCajitaOut, Plastic, "logicCajitaOut");
 	refSurface->SetMaterialPropertiesTable(mptPlastic);
     }
-
     G4LogicalSkinSurface *logicSurface = new G4LogicalSkinSurface("refSurface", logicCajitaOut, refSurface);
-    G4VPhysicalVolume *physCajitaOut  = new G4PVPlacement(0, G4ThreeVector(0 * mm, inner_dim[1] * mm, 0 * mm), logicCajitaOut, "physCajitaOut", logicWorld, false, 1, true);
+    
+    if (fjson.json_map["big_cajita"]["shape"] == "Box") {
+        G4VPhysicalVolume *physCajitaOut  = new G4PVPlacement(0, G4ThreeVector(0 * mm, inner_dim[1] * mm, 0 * mm), logicCajitaOut, "physCajitaOut", logicWorld, false, 1, true);
+    }
+    else if (fjson.json_map["big_cajita"]["shape"] == "Cylinder") {
+        // Rotate both cylinders to be aligned with Y axis
+        rotCyl->rotateX(90. * deg);
+        G4VPhysicalVolume *physCajitaOut  = new G4PVPlacement(rotCyl, G4ThreeVector(0 * mm, inner_dim[1] * mm, 0 * mm), logicCajitaOut, "physCajitaOut", logicWorld, false, 1, true);
+    }
+    else {
+        G4VPhysicalVolume *physCajitaOut  = new G4PVPlacement(0, G4ThreeVector(0 * mm, 0 * mm, 0 * mm), logicCajitaOut, "physCajitaOut", logicWorld, false, 1, true);
+    }
     logicCajitaOut->SetVisAttributes(logicSolidVisAtt); // solid+grey
 
-    // --- SC --- //
-    std::vector<double> SC_dim, SC_pos, SC_rot;
-    for (double coord:fjson.json_map["arapuca"]["dim"]) SC_dim.push_back(coord);
-    for (double coord:fjson.json_map["arapuca"]["pos"]) SC_pos.push_back(coord);
-    for (double coord:fjson.json_map["arapuca"]["rot"]) SC_rot.push_back(coord);
-    G4Box *solidSC = new G4Box("solidSC", SC_dim[0] * mm, SC_dim[1] * mm, SC_dim[2] * mm); //--<<-- 1 filtro de VD X-ARAPUCA
-    logicSC = new G4LogicalVolume(solidSC, LAr, "logicSC");                     //--<<--
-    logicSC->SetVisAttributes(logicSCVisAtt);
-    G4VPhysicalVolume *physSC = new G4PVPlacement(0, G4ThreeVector(0 * mm,  SC_pos[1]* mm, 0 * mm), logicSC, "physSC", logicWorld, false, 1, true);
+    // --- RefSiPM --- //
+    std::vector<double> RefSiPM_dim, RefSiPM_pos, RefSiPM_rot;
+    for (double coord:fjson.json_map["ref_sipm"]["dim"]) RefSiPM_dim.push_back(coord);
+    for (double coord:fjson.json_map["ref_sipm"]["pos"]) RefSiPM_pos.push_back(coord);
+    for (double coord:fjson.json_map["ref_sipm"]["rot"]) RefSiPM_rot.push_back(coord);
+    G4Box *solidRefSiPM = new G4Box("solidRefSiPM", RefSiPM_dim[0] * mm, RefSiPM_dim[1] * mm, RefSiPM_dim[2] * mm); //--<<-- 1 filtro de VD X-ARAPUCA
+    logicRefSiPM = new G4LogicalVolume(solidRefSiPM, LAr, "logicRefSiPM");                     //--<<--
+    logicRefSiPM->SetVisAttributes(logicRefSiPMVisAtt);
+    G4VPhysicalVolume *physRefSiPM = new G4PVPlacement(0, G4ThreeVector(0 * mm,  RefSiPM_pos[1]* mm, 0 * mm), logicRefSiPM, "physRefSiPM", logicWorld, false, 1, true);
 
     // --- SiPM x2 --- //
     std::vector<double> SiPM_dim, SiPM1_x ,SiPM2_x ,SiPM1_x_tapa ,SiPM2_x_tapa,SiPM_rot;
@@ -241,12 +266,12 @@ void MyDetectorConstruction::ConstructSDandField()
 {
     // In detector.cc we include the sensitivity of the detectors.
     // Need to upgrade to include the 3 detectors sensitivity separately
-    MySensitiveDetector *sensSC    = new MySensitiveDetector("SensitiveSC");
+    MySensitiveDetector *sensRefSiPM    = new MySensitiveDetector("SensitiveRefSiPM");
     MySensitiveDetector *sensSiPM1 = new MySensitiveDetector("SensitiveSiPM1");
     MySensitiveDetector *sensSiPM2 = new MySensitiveDetector("SensitiveSiPM2");
     
     // check geometry.hh and include the logic of the detector you need to be sensitive
-    logicSC->SetSensitiveDetector(sensSC);
+    logicRefSiPM->SetSensitiveDetector(sensRefSiPM);
     if (check_is_file_type(fjsonName) && check_json_file(fjsonName))
     { 
         logicSiPM1->SetSensitiveDetector(sensSiPM1);
