@@ -34,6 +34,7 @@ void MyDetectorConstruction::DefineMaterials()
     G4double rindexLAr[num] = {1.38, 1.38};                                    // not considering dispersion so assume rindex constant
     G4double reflectivityAluminum[num] = {0.9, 0.9}; // reflectivity of aluminum
     G4double reflectivitySteel[num] = {0.35, 0.35}; // reflectivity of steel
+    G4double reflectivityPlastic[num] = {0., 0.};
     // G4double efficiency[num] = {0.8, 0.1};
 
     G4MaterialPropertiesTable *mptAir = new G4MaterialPropertiesTable();
@@ -74,16 +75,15 @@ void MyDetectorConstruction::DefineMaterials()
     mptLAr->AddProperty("RAYLEIGH" , RayleighEnergies , RayleighSpectrum );
     LAr->SetMaterialPropertiesTable(mptLAr);
 
-    G4MaterialPropertiesTable *mptPlastic = new G4MaterialPropertiesTable();
-    mptPlastic->AddProperty("RINDEX", energy, rindexLAr, num);
+    mptPlastic = new G4MaterialPropertiesTable();
+    mptPlastic->AddProperty("REFLECTIVITY", energy, reflectivityPlastic, num);
     Plastic->SetMaterialPropertiesTable(mptPlastic);
-    G4MaterialPropertiesTable *mptAluminum = new G4MaterialPropertiesTable();
-    mptMetal->AddProperty("REFLECTIVITY", energy, reflectivityAluminum, num);
-    Aluminum->SetMaterialPropertiesTable(mptSteel);
-    G4MaterialPropertiesTable *mptSteel = new G4MaterialPropertiesTable();
-    mptMetal->AddProperty("REFLECTIVITY", energy, reflectivitySteel, num);
-
-    Steel->SetMaterialPropertiesTable(mptMetal);
+    mptAluminum = new G4MaterialPropertiesTable();
+    mptAluminum->AddProperty("REFLECTIVITY", energy, reflectivityAluminum, num);
+    Aluminum->SetMaterialPropertiesTable(mptAluminum);
+    mptSteel = new G4MaterialPropertiesTable();
+    mptSteel->AddProperty("REFLECTIVITY", energy, reflectivitySteel, num);
+    Steel->SetMaterialPropertiesTable(mptSteel);
 }
 
 void MyDetectorConstruction::ConstructScintillator()
@@ -121,15 +121,29 @@ void MyDetectorConstruction::ConstructScintillator()
     auto innerBox = new G4Box("solidCajitaOut2", inner_dim[0]  * mm, inner_dim[1]  * mm, inner_dim[2]  * mm);
     G4SubtractionSolid *solidCajitaOut = new G4SubtractionSolid("solidCajitaOut",outerBox,innerBox);
     G4LogicalVolume *logicCajitaOut;
-    if (fjson.json_map["big_cajita"]["material"] == "Steel")
+    G4OpticalSurface *refSurface;
+
+    refSurface = new G4OpticalSurface("refSurface");
+    refSurface->SetType(dielectric_metal);        // acero es un metal
+    refSurface->SetFinish(polished);              // acabado pulido
+    refSurface->SetModel(glisur);                 // modelo de reflexión	
+    
+    if (fjson.json_map["big_cajita"]["material"] == "Steel"){
         logicCajitaOut = new G4LogicalVolume(solidCajitaOut, Steel, "logicCajitaOut");
-    else if (fjson.json_map["big_cajita"]["material"] == "Aluminum")
+	refSurface->SetMaterialPropertiesTable(mptSteel);
+    }
+    else if (fjson.json_map["big_cajita"]["material"] == "Aluminum"){
         logicCajitaOut = new G4LogicalVolume(solidCajitaOut, Aluminum, "logicCajitaOut");
+	refSurface->SetMaterialPropertiesTable(mptAluminum);
+    }
     else
     {
         std::cerr << "Material for big_cajita not recognized. Using Plastic as default." << std::endl;
         logicCajitaOut = new G4LogicalVolume(solidCajitaOut, Plastic, "logicCajitaOut");
+	refSurface->SetMaterialPropertiesTable(mptPlastic);
     }
+
+    G4LogicalSkinSurface *logicSurface = new G4LogicalSkinSurface("refSurface", logicCajitaOut, refSurface);
     G4VPhysicalVolume *physCajitaOut  = new G4PVPlacement(0, G4ThreeVector(0 * mm, inner_dim[1] * mm, 0 * mm), logicCajitaOut, "physCajitaOut", logicWorld, false, 1, true);
     logicCajitaOut->SetVisAttributes(logicSolidVisAtt); // solid+grey
 

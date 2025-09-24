@@ -24,14 +24,17 @@ void MyDetectorConstruction::DefineMaterials()
 
     Air = nist->FindOrBuildMaterial("G4_AIR");
     LAr = nist->FindOrBuildMaterial("G4_lAr");
+    Aluminum = nist->FindOrBuildMaterial("G4_Al");
+    Steel = nist->FindOrBuildMaterial("G4_STAINLESS-STEEL");
     Plastic = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
-    Metal = nist->FindOrBuildMaterial("G4_STAINLESS-STEEL");
 
     const G4int num = 2;
     G4double energy[num] = {1.239841939 * eV / 0.128, 1.239841939 * eV / 0.9}; // momentum of optical photon; conversion wavelenght(um) to energy
     G4double rindexAir[num] = {1.0, 1.0};                                      // Refraction index for propagation (for photons to propagate in Air)
     G4double rindexLAr[num] = {1.38, 1.38};                                    // not considering dispersion so assume rindex constant
-    G4double reflectivity[num] = {0.94, 0.94};
+    G4double reflectivityAluminum[num] = {0.9, 0.9}; // reflectivity of aluminum
+    G4double reflectivitySteel[num] = {0.35, 0.35}; // reflectivity of steel
+    G4double reflectivityPlastic[num] = {0., 0.};
     // G4double efficiency[num] = {0.8, 0.1};
 
     G4MaterialPropertiesTable *mptAir = new G4MaterialPropertiesTable();
@@ -51,13 +54,11 @@ void MyDetectorConstruction::DefineMaterials()
         4.18626 * eV, 4.68626 * eV, 5.18626 * eV, 5.68626 * eV, 6.18626 * eV, 6.68626 * eV,
         7.18626 * eV, 7.68626 * eV, 8.18626 * eV, 8.68626 * eV, 9.18626 * eV, 9.68626 * eV,
         1.01863e1 * eV, 1.06863e1 * eV, 1.11863e1 * eV};
-
     std::vector<G4double> RIndexSpectrum = {
         1.24664, 1.2205, 1.22694, 1.22932, 1.23124, 1.23322,
         1.23545, 1.23806, 1.24116, 1.24489, 1.24942, 1.25499,
         1.26197, 1.2709, 1.28263, 1.29865, 1.32169, 1.35747,
         1.42039, 1.56011, 2.16626};
-
     std::vector<G4double> RayleighEnergies = {
         1.18626 * eV, 1.68626 * eV, 2.18626 * eV, 2.68626 * eV, 3.18626 * eV, 3.68626 * eV,
         4.18626 * eV, 4.68626 * eV, 5.18626 * eV, 5.68626 * eV, 6.18626 * eV, 6.68626 * eV,
@@ -74,11 +75,15 @@ void MyDetectorConstruction::DefineMaterials()
     mptLAr->AddProperty("RAYLEIGH" , RayleighEnergies , RayleighSpectrum );
     LAr->SetMaterialPropertiesTable(mptLAr);
 
-    Metal = nist->FindOrBuildMaterial("G4_STAINLESS-STEEL");
-    G4MaterialPropertiesTable *mptMetal = new G4MaterialPropertiesTable();
-    mptMetal->AddProperty("ABSLENGTH", AbsLengthEnergies, AbsLengthSpectrum_metal);
-
-    Metal->SetMaterialPropertiesTable(mptMetal);
+    mptPlastic = new G4MaterialPropertiesTable();
+    mptPlastic->AddProperty("REFLECTIVITY", energy, reflectivityPlastic, num);
+    Plastic->SetMaterialPropertiesTable(mptPlastic);
+    mptAluminum = new G4MaterialPropertiesTable();
+    mptAluminum->AddProperty("REFLECTIVITY", energy, reflectivityAluminum, num);
+    Aluminum->SetMaterialPropertiesTable(mptAluminum);
+    mptSteel = new G4MaterialPropertiesTable();
+    mptSteel->AddProperty("REFLECTIVITY", energy, reflectivitySteel, num);
+    Steel->SetMaterialPropertiesTable(mptSteel);
 }
 
 void MyDetectorConstruction::ConstructScintillator()
@@ -115,7 +120,30 @@ void MyDetectorConstruction::ConstructScintillator()
     auto outerBox = new G4Box("solidCajitaOut1", outter_dim[0] * mm, outter_dim[1] * mm, outter_dim[2] * mm);
     auto innerBox = new G4Box("solidCajitaOut2", inner_dim[0]  * mm, inner_dim[1]  * mm, inner_dim[2]  * mm);
     G4SubtractionSolid *solidCajitaOut = new G4SubtractionSolid("solidCajitaOut",outerBox,innerBox);
-    G4LogicalVolume *logicCajitaOut = new G4LogicalVolume(solidCajitaOut, Plastic, "logicCajitaOut");
+    G4LogicalVolume *logicCajitaOut;
+    G4OpticalSurface *refSurface;
+
+    refSurface = new G4OpticalSurface("refSurface");
+    refSurface->SetType(dielectric_metal);        // acero es un metal
+    refSurface->SetFinish(polished);              // acabado pulido
+    refSurface->SetModel(glisur);                 // modelo de reflexión	
+    
+    if (fjson.json_map["big_cajita"]["material"] == "Steel"){
+        logicCajitaOut = new G4LogicalVolume(solidCajitaOut, Steel, "logicCajitaOut");
+	refSurface->SetMaterialPropertiesTable(mptSteel);
+    }
+    else if (fjson.json_map["big_cajita"]["material"] == "Aluminum"){
+        logicCajitaOut = new G4LogicalVolume(solidCajitaOut, Aluminum, "logicCajitaOut");
+	refSurface->SetMaterialPropertiesTable(mptAluminum);
+    }
+    else
+    {
+        std::cerr << "Material for big_cajita not recognized. Using Plastic as default." << std::endl;
+        logicCajitaOut = new G4LogicalVolume(solidCajitaOut, Plastic, "logicCajitaOut");
+	refSurface->SetMaterialPropertiesTable(mptPlastic);
+    }
+
+    G4LogicalSkinSurface *logicSurface = new G4LogicalSkinSurface("refSurface", logicCajitaOut, refSurface);
     G4VPhysicalVolume *physCajitaOut  = new G4PVPlacement(0, G4ThreeVector(0 * mm, inner_dim[1] * mm, 0 * mm), logicCajitaOut, "physCajitaOut", logicWorld, false, 1, true);
     logicCajitaOut->SetVisAttributes(logicSolidVisAtt); // solid+grey
 
@@ -156,9 +184,9 @@ void MyDetectorConstruction::ConstructScintillator()
     G4VPhysicalVolume *physSiPM2 = new G4PVPlacement(R_SiPM2, G4ThreeVector( SiPM2_x[0] * mm, SiPM2_x[1] * mm, SiPM2_x[2] * mm), logicSiPM2, "physSiPM2", logicWorld, false, 1, true);
     
     // Insert optional components:
+    std::vector<double> tower_dim, tower_buffer;
     if(fjson.json_map.contains("tower_sipms")){
         std::cout<<"---------------- INSERTING SIPMs' REBABA ----------------"<<std::endl;
-        std::vector<double> tower_dim, tower_buffer;
         for (double coord:fjson.json_map["tower_sipms"]["dim"]) tower_dim.push_back(coord);
         for (double coord:fjson.json_map["tower_sipms"]["buffer"]) tower_buffer.push_back(coord);
         auto outerRebaba = new G4Box("solidRebabaOut1", inner_dim[0] * mm, tower_dim[1] * mm, inner_dim[2] * mm);
@@ -168,20 +196,27 @@ void MyDetectorConstruction::ConstructScintillator()
         G4VPhysicalVolume *physRebabaOut  = new G4PVPlacement(0, G4ThreeVector(0 * mm, 2*inner_dim[1]-tower_dim[1] * mm, 0 * mm), logicRebabaOut, "physRebabaOut", logicWorld, false, 1, true);
         logicRebabaOut->SetVisAttributes(logicSolidVisAtt); // blue
     }
+    std::vector<double> support_dim, support_angle, support_x;
     if(fjson.json_map.contains("alpha_support")){
         std::cout<<"---------------- INSERTING ALPHA SUPPORT ----------------"<<std::endl;
-        std::vector<double> support_dim, support_angle, support_x;
         for (double coord:fjson.json_map["alpha_support"]["dim"]) support_dim.push_back(coord);
         for (double coord:fjson.json_map["alpha_support"]["angle"]) support_angle.push_back(coord);
         for (double coord:fjson.json_map["alpha_support"]["pos"]) support_x.push_back(coord);
         G4Tubs *solidFalphaOut = new G4Tubs("solidFalphaOut", support_dim[0] * mm, support_dim[1] * mm, support_dim[2] * mm, support_angle[0]*deg, support_angle[1]*deg);
-        G4LogicalVolume   *logicFalphaOut = new G4LogicalVolume(solidFalphaOut, Metal, "logicFalphaOut");
-        G4VPhysicalVolume *physFalphaOut  = new G4PVPlacement(pRotX, G4ThreeVector(support_x[0] * mm, 2*(inner_dim[1]-support_dim[2]) * mm, support_x[2] * mm), logicFalphaOut,  "physFalphaOut", logicWorld, false, 0, 1);
-        
-        G4RotationMatrix *pRotX2 = new G4RotationMatrix();
-        pRotX2->rotateX(270. * deg);
-        G4VPhysicalVolume *physFalphaOut2 = new G4PVPlacement(pRotX2, G4ThreeVector(support_x[0] * mm, 2*(inner_dim[1]-support_dim[2]) * mm, -support_x[2] * mm), logicFalphaOut, "physFalphaOut2", logicWorld, false, 0, 1);
+        G4LogicalVolume   *logicFalphaOut = new G4LogicalVolume(solidFalphaOut, Plastic, "logicFalphaOut");
+        G4VPhysicalVolume *physFalphaOut  = new G4PVPlacement(pRotX, G4ThreeVector(support_x[0] * mm, 2*(inner_dim[1]-support_dim[2]/2) * mm, support_x[2] * mm), logicFalphaOut,  "physFalphaOut", logicWorld, false, 0, 1);
         logicFalphaOut->SetVisAttributes(logicTestVisAtt);
+    }
+    std::vector<double> mask_dim, mask_angle, mask_x;
+    if(fjson.json_map.contains("alpha_mask")){
+        std::cout<<"---------------- INSERTING ALPHA MASK ----------------"<<std::endl;
+        for (double coord:fjson.json_map["alpha_mask"]["dim"]) mask_dim.push_back(coord);
+        for (double coord:fjson.json_map["alpha_mask"]["angle"]) mask_angle.push_back(coord);
+        for (double coord:fjson.json_map["alpha_mask"]["pos"]) mask_x.push_back(coord);
+        G4Tubs *solidMalphaOut = new G4Tubs("solidMalphaOut", mask_dim[0] * mm, mask_dim[1] * mm, mask_dim[2] * mm, mask_angle[0]*deg, mask_angle[1]*deg);
+        G4LogicalVolume   *logicMalphaOut = new G4LogicalVolume(solidMalphaOut, Plastic, "logicMalphaOut");
+        G4VPhysicalVolume *physMalphaOut  = new G4PVPlacement(pRotX, G4ThreeVector(mask_x[0] * mm, 2*(inner_dim[1]-support_dim[2]/2-mask_x[1]/2) * mm, mask_x[2] * mm), logicMalphaOut,  "physMalphaOut", logicWorld, false, 0, 1);
+        logicMalphaOut->SetVisAttributes(logicTestVisAtt);
     }
 }
 
