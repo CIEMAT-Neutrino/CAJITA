@@ -93,10 +93,10 @@ void MyDetectorConstruction::ConstructScintillator()
     // >> Set visAttributes for various components
     G4VisAttributes *logicSolidVisAtt    = new G4VisAttributes(G4Colour(0.46, 0.53, 0.6, 0.3));  // grey + alpha
     G4VisAttributes *logicHoleVisAtt     = new G4VisAttributes(G4Colour(0.0, 0.0, 0.0, 1));      // black + alpha
-    G4VisAttributes *logicRefSiPMVisAtt  = new G4VisAttributes(G4Colour(0.25, 0.88, 0.41, 0.5)); // green
+    G4VisAttributes *logicRefSiPMVisAtt  = new G4VisAttributes(G4Colour(0.25, 0.88, 0.41, 0.5)); // green + alpha
     G4VisAttributes *logicDetectorVisAtt = new G4VisAttributes(G4Colour(1, 0, 0, 1));         // red
-    G4VisAttributes *logicFiltroVisAtt   = new G4VisAttributes(G4Colour(0.0, 0.0, 0.0, 0.7));
-    G4VisAttributes *logicTestVisAtt     = new G4VisAttributes(G4Colour(0,0,1,0.5)); // blue
+    G4VisAttributes *logicFiltroVisAtt   = new G4VisAttributes(G4Colour(0.0, 0.0, 0.0, 0.1)); // black + alpha
+    G4VisAttributes *logicTestVisAtt     = new G4VisAttributes(G4Colour(0,0,1,0.5)); // blue + alpha
     logicSolidVisAtt->SetForceSolid(true);
     logicHoleVisAtt->SetForceWireframe(true);
     logicDetectorVisAtt->SetForceSolid(true);
@@ -177,10 +177,15 @@ void MyDetectorConstruction::ConstructScintillator()
     for (double coord:fjson.json_map["ref_sipm"]["dim"]) RefSiPM_dim.push_back(coord);
     for (double coord:fjson.json_map["ref_sipm"]["pos"]) RefSiPM_pos.push_back(coord);
     for (double coord:fjson.json_map["ref_sipm"]["rot"]) RefSiPM_rot.push_back(coord);
-    G4Box *solidRefSiPM = new G4Box("solidRefSiPM", RefSiPM_dim[0] * mm, RefSiPM_dim[1] * mm, RefSiPM_dim[2] * mm); //--<<-- 1 filtro de VD X-ARAPUCA
-    logicRefSiPM = new G4LogicalVolume(solidRefSiPM, LAr, "logicRefSiPM");                     //--<<--
+    G4Box *solidRefSiPM = new G4Box("solidRefSiPM", RefSiPM_dim[0] * mm, RefSiPM_dim[1] * mm, RefSiPM_dim[2] * mm);
+    logicRefSiPM = new G4LogicalVolume(solidRefSiPM, LAr, "logicRefSiPM");                    
     logicRefSiPM->SetVisAttributes(logicRefSiPMVisAtt);
     G4VPhysicalVolume *physRefSiPM = new G4PVPlacement(0, G4ThreeVector(0 * mm,  RefSiPM_pos[1]* mm, 0 * mm), logicRefSiPM, "physRefSiPM", logicWorld, false, 1, true);
+    // Add pcb (opache support for SiPM)
+    G4Box *solidPCB = new G4Box("solidPCB", 1.5*RefSiPM_dim[0] * mm, 0.5 * mm, 1.5*RefSiPM_dim[2] * mm); 
+    G4LogicalVolume *logicPCB = new G4LogicalVolume(solidPCB, Plastic, "logicPCB");         
+    logicPCB->SetVisAttributes(logicFiltroVisAtt);
+    G4VPhysicalVolume *physPCB = new G4PVPlacement(0, G4ThreeVector(0 * mm, (RefSiPM_pos[1]-RefSiPM_dim[1]-0.5) * mm, 0 * mm), logicPCB, "physPCB", logicWorld, false, 1, true);
 
     // --- SiPM x2 --- //
     std::vector<double> SiPM_dim, SiPM1_x ,SiPM2_x ,SiPM1_x_tapa ,SiPM2_x_tapa,SiPM_rot;
