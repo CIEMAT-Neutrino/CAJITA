@@ -24,14 +24,16 @@ void MyDetectorConstruction::DefineMaterials()
 
     Air = nist->FindOrBuildMaterial("G4_AIR");
     LAr = nist->FindOrBuildMaterial("G4_lAr");
+    Aluminum = nist->FindOrBuildMaterial("G4_Al");
+    Steel = nist->FindOrBuildMaterial("G4_STAINLESS-STEEL");
     Plastic = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
-    Metal = nist->FindOrBuildMaterial("G4_STAINLESS-STEEL");
 
     const G4int num = 2;
     G4double energy[num] = {1.239841939 * eV / 0.128, 1.239841939 * eV / 0.9}; // momentum of optical photon; conversion wavelenght(um) to energy
     G4double rindexAir[num] = {1.0, 1.0};                                      // Refraction index for propagation (for photons to propagate in Air)
     G4double rindexLAr[num] = {1.38, 1.38};                                    // not considering dispersion so assume rindex constant
-    G4double reflectivity[num] = {0.94, 0.94};
+    G4double reflectivityAluminum[num] = {0.9, 0.9}; // reflectivity of aluminum
+    G4double reflectivitySteel[num] = {0.35, 0.35}; // reflectivity of steel
     // G4double efficiency[num] = {0.8, 0.1};
 
     G4MaterialPropertiesTable *mptAir = new G4MaterialPropertiesTable();
@@ -51,13 +53,11 @@ void MyDetectorConstruction::DefineMaterials()
         4.18626 * eV, 4.68626 * eV, 5.18626 * eV, 5.68626 * eV, 6.18626 * eV, 6.68626 * eV,
         7.18626 * eV, 7.68626 * eV, 8.18626 * eV, 8.68626 * eV, 9.18626 * eV, 9.68626 * eV,
         1.01863e1 * eV, 1.06863e1 * eV, 1.11863e1 * eV};
-
     std::vector<G4double> RIndexSpectrum = {
         1.24664, 1.2205, 1.22694, 1.22932, 1.23124, 1.23322,
         1.23545, 1.23806, 1.24116, 1.24489, 1.24942, 1.25499,
         1.26197, 1.2709, 1.28263, 1.29865, 1.32169, 1.35747,
         1.42039, 1.56011, 2.16626};
-
     std::vector<G4double> RayleighEnergies = {
         1.18626 * eV, 1.68626 * eV, 2.18626 * eV, 2.68626 * eV, 3.18626 * eV, 3.68626 * eV,
         4.18626 * eV, 4.68626 * eV, 5.18626 * eV, 5.68626 * eV, 6.18626 * eV, 6.68626 * eV,
@@ -74,11 +74,16 @@ void MyDetectorConstruction::DefineMaterials()
     mptLAr->AddProperty("RAYLEIGH" , RayleighEnergies , RayleighSpectrum );
     LAr->SetMaterialPropertiesTable(mptLAr);
 
-    Metal = nist->FindOrBuildMaterial("G4_STAINLESS-STEEL");
-    G4MaterialPropertiesTable *mptMetal = new G4MaterialPropertiesTable();
-    mptMetal->AddProperty("ABSLENGTH", AbsLengthEnergies, AbsLengthSpectrum_metal);
+    G4MaterialPropertiesTable *mptPlastic = new G4MaterialPropertiesTable();
+    mptPlastic->AddProperty("RINDEX", energy, rindexLAr, num);
+    Plastic->SetMaterialPropertiesTable(mptPlastic);
+    G4MaterialPropertiesTable *mptAluminum = new G4MaterialPropertiesTable();
+    mptMetal->AddProperty("REFLECTIVITY", energy, reflectivityAluminum, num);
+    Aluminum->SetMaterialPropertiesTable(mptSteel);
+    G4MaterialPropertiesTable *mptSteel = new G4MaterialPropertiesTable();
+    mptMetal->AddProperty("REFLECTIVITY", energy, reflectivitySteel, num);
 
-    Metal->SetMaterialPropertiesTable(mptMetal);
+    Steel->SetMaterialPropertiesTable(mptMetal);
 }
 
 void MyDetectorConstruction::ConstructScintillator()
@@ -116,8 +121,10 @@ void MyDetectorConstruction::ConstructScintillator()
     auto innerBox = new G4Box("solidCajitaOut2", inner_dim[0]  * mm, inner_dim[1]  * mm, inner_dim[2]  * mm);
     G4SubtractionSolid *solidCajitaOut = new G4SubtractionSolid("solidCajitaOut",outerBox,innerBox);
     G4LogicalVolume *logicCajitaOut;
-    if (fjson.json_map["big_cajita"]["material"] == "Metal")
-        logicCajitaOut = new G4LogicalVolume(solidCajitaOut, Metal, "logicCajitaOut");
+    if (fjson.json_map["big_cajita"]["material"] == "Steel")
+        logicCajitaOut = new G4LogicalVolume(solidCajitaOut, Steel, "logicCajitaOut");
+    else if (fjson.json_map["big_cajita"]["material"] == "Aluminum")
+        logicCajitaOut = new G4LogicalVolume(solidCajitaOut, Aluminum, "logicCajitaOut");
     else
     {
         std::cerr << "Material for big_cajita not recognized. Using Plastic as default." << std::endl;

@@ -36,7 +36,7 @@ private:
     G4Box *solidWorld;
     G4LogicalVolume *logicWorld;
     G4VPhysicalVolume *physWorld;
-    G4Material *Air, *LAr, *Plastic, *Metal, *Iron, *Nickel, *Copper;
+    G4Material *Air, *LAr, *Plastic, *Metal, *Aluminum, *Iron, *Nickel, *Copper;
 
     // SENSITIVE DETECTORS NEED TO BE DEFINED HERE
     G4LogicalVolume *logicSC, *logicSiPM1, *logicSiPM2;
