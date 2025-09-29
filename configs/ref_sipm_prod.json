@@ -7,7 +7,7 @@
     "/gps/ene/mono 9.7 eV",
     "/gps/pos/type Plane",
     "/gps/pos/shape Circle",
-    "/gps/pos/centre 0 17.5 0 mm",
+    "/gps/pos/centre 0 78.5 0 mm",
     "/gps/pos/radius  11 mm",
     "/gps/pos/rot1 0 0 90",
     "/gps/pos/rot2 90 0 0",
@@ -30,7 +30,7 @@
     "/vis/scene/endOfEventAction accumulate 10"
   ],
   "sensors_keys": [
-    "XArapuca",
+    "RefSiPM",
     "SiPM1",
     "SiPM2"
   ],
@@ -40,16 +40,17 @@
     "Z": 0
   },
   "big_cajita": {
-    "material": "Plastic",
+    "shape": "Cylinder",
+    "material": "Steel",
     "outter_dim": [
-      20.0,
-       9.5,
-      20.0
+      40.0,
+      40.0,
+      40.0
     ],
     "inner_dim": [
-      19.5,
-       9.0,
-      19.5
+      39.5,
+      39.5,
+      39.5
     ],
     "comment": "Rotation and position should be left as they are",
     "rot": [
@@ -58,7 +59,7 @@
       0.0
     ]
   },
-  "arapuca": {
+  "ref_sipm": {
     "dim": [
       3.0,
       1e-6,
@@ -66,7 +67,7 @@
     ],
     "pos": [
       0.0,
-      0.5,
+     40.0,
       0.0
     ],
     "comment": "Rotation should follow the same as big_cajita",
@@ -83,13 +84,13 @@
       3.0
     ],
     "pos1": [
-      19.5,
-       9.5,
+      38.5,
+      59.5,
       0
     ],
     "pos2": [
-      -19.5,
-        9.5,
+      -38.5,
+       59.5,
       0
     ],
     "rot": [
@@ -157,7 +158,7 @@
     "dim": [
       2.83,
       14.5,
-      0.5
+       1.0
     ],
     "angle": [
       0,
@@ -166,7 +167,7 @@
     "comment": "Y coordinate substracted to top of big_cajita - support thickness",
     "pos": [
       0.0,
-      0.5,
+      1.0,
       0.0
     ]
   }
