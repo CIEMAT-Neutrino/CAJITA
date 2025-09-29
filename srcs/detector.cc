@@ -77,10 +77,11 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
         if (DEBUG) {std::cout << "SAVING MODE **ALL** (detector.cc and recompile to change)" << std::endl;}
         // Get sensor name as number
         double sensor=999;
-        if      (sensor_name=="physSC")    { sensor=0;}
-        else if (sensor_name=="physSiPM1") { sensor=1;}
-        else if (sensor_name=="physSiPM2") { sensor=2;}
-        else if (sensor_name=="physPMT")   { sensor=3;}
+        if      (sensor_name=="physSC")     { sensor=0;}
+        else if (sensor_name=="physRefSiPM"){ sensor=0;}
+        else if (sensor_name=="physSiPM1")  { sensor=1;}
+        else if (sensor_name=="physSiPM2")  { sensor=2;}
+        else if (sensor_name=="physPMT")    { sensor=3;}
 
         man->FillNtupleIColumn(0, 0, evt); //event number vs entries (statistical fluctuation same ph hit)
         man->FillNtupleDColumn(0, 1, posPhoton[0]);
@@ -129,10 +130,11 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
         {
             // Get sensor name as number
             double sensor=999;
-            if      (sensor_name=="physSC")    {sensor=0;}
-            else if (sensor_name=="physSiPM1") {sensor=1;}
-            else if (sensor_name=="physSiPM2") {sensor=2;}
-            else if (sensor_name=="physPMT")   {sensor=3;}
+            if      (sensor_name=="physSC")     {sensor=0;}
+            else if (sensor_name=="physRefSiPM"){sensor=0;}
+            else if (sensor_name=="physSiPM1")  {sensor=1;}
+            else if (sensor_name=="physSiPM2")  {sensor=2;}
+            else if (sensor_name=="physPMT")    {sensor=3;}
 
             if (DEBUG) {std::cout << "Event: " << evt << " of " << Nevts << "; prevEvent: " << prevEvent << "; acum_hits: " << acum_hits << " ;sensor:"<<sensor << std::endl;}
             //Save the info per event (last event won't be processed)
