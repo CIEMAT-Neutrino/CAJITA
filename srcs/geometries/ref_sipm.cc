@@ -140,8 +140,15 @@ void MyDetectorConstruction::ConstructScintillator()
 
     refSurface = new G4OpticalSurface("refSurface"); // crea la superficie óptica
     refSurface->SetType(dielectric_metal);           // acero es un metal
-    refSurface->SetFinish(polished);                 // acabado pulido
-    refSurface->SetModel(glisur);                    // modelo de reflexión	
+    
+    if (fjson.json_map["big_cajita"]["material"] == "polished")
+        refSurface->SetFinish(polished);                 // acabado pulido, puede ser polished, ground, groundfrontpainted, groundbackpainted
+    else if (fjson.json_map["big_cajita"]["material"] == "ground")
+        refSurface->SetFinish(ground);                   // acabado rugoso
+    else
+        refSurface->SetFinish(polished);                 // default polished
+    
+    refSurface->SetModel(glisur);                    // modelo de reflexión, puede ser unified o glisur	
     
     if (fjson.json_map["big_cajita"]["material"] == "Steel"){
         logicCajitaOut = new G4LogicalVolume(solidCajitaOut, Steel, "logicCajitaOut");
@@ -185,7 +192,7 @@ void MyDetectorConstruction::ConstructScintillator()
     G4Box *solidPCB = new G4Box("solidPCB", 1.5*RefSiPM_dim[0] * mm, 0.5 * mm, 1.5*RefSiPM_dim[2] * mm); 
     G4LogicalVolume *logicPCB = new G4LogicalVolume(solidPCB, Plastic, "logicPCB");         
     logicPCB->SetVisAttributes(logicFiltroVisAtt);
-    G4VPhysicalVolume *physPCB = new G4PVPlacement(0, G4ThreeVector(0 * mm, (RefSiPM_pos[1]-RefSiPM_dim[1]-0.5) * mm, 0 * mm), logicPCB, "physPCB", logicWorld, false, 1, true);
+    G4VPhysicalVolume *physPCB = new G4PVPlacement(0, G4ThreeVector(0 * mm, (RefSiPM_pos[1]-RefSiPM_dim[1]-0.6) * mm, 0 * mm), logicPCB, "physPCB", logicWorld, false, 1, true);
 
     // --- SiPM x2 --- //
     std::vector<double> SiPM_dim, SiPM1_x ,SiPM2_x ,SiPM1_x_tapa ,SiPM2_x_tapa,SiPM_rot;
@@ -271,7 +278,7 @@ void MyDetectorConstruction::ConstructSDandField()
 {
     // In detector.cc we include the sensitivity of the detectors.
     // Need to upgrade to include the 3 detectors sensitivity separately
-    MySensitiveDetector *sensRefSiPM    = new MySensitiveDetector("SensitiveRefSiPM");
+    MySensitiveDetector *sensRefSiPM = new MySensitiveDetector("SensitiveRefSiPM");
     MySensitiveDetector *sensSiPM1 = new MySensitiveDetector("SensitiveSiPM1");
     MySensitiveDetector *sensSiPM2 = new MySensitiveDetector("SensitiveSiPM2");
     

@@ -49,7 +49,4 @@ private:
   virtual void ConstructSDandField(); //construct sensitive detector and E/B field
 };
 
-
-
 #endif
-
