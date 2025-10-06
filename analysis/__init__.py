@@ -65,48 +65,64 @@ def compute_real_angles(my_data, sensors_info, debug:bool=False):
 def plot_variable_distributions(my_data,variable,stats=(False,False),bins=50,probability=False,density=False,limits=(1,None),percentile=(0.01,0.99),log=(False,False),figsize=(10,10),dpi=300,save=False,debug=False):
     fig = plt.figure(dpi=dpi)
     for my_file in my_data.keys():
+        df = pd.DataFrame()
         plt.title(my_file.replace(".root",""))
         if not os.path.isdir("../results/stats/"): os.mkdir("../results/stats/")
-        with open("../results/stats/"+my_file.split('.root')[0]+'_'+variable+"_stats.txt","w") as f:
-            if limits[0] is not None:
-                plt.axvline(limits[0],color="grey",linestyle="--",label="Min limit %.0f"%limits[0])
-            for sensor in my_data[my_file]:
-                # Check if variable exists
-                try: my_data[my_file][sensor][variable]
-                except KeyError:
-                    print("ERROR: Variable %s not found in %s"%(variable,my_file))
-                    print("Available variables are: %s"%my_data[my_file][sensor].keys())
-                    raise KeyError
-                # Compute percentile
-                hist_data = np.sort(my_data[my_file][sensor][variable])
-                if limits[0] is not None: hist_data = hist_data[hist_data>=limits[0]]
-                if limits[1] is not None: hist_data = hist_data[hist_data<=limits[1]]
-                if debug: print("%s: %i"%(variable,len(my_data[my_file][sensor][variable])))
-                selected_data = hist_data[int(percentile[0]*len(hist_data)):int(percentile[1]*len(hist_data))]
-                if debug: print("%s after percentile cut: %i"%(variable,len(selected_data)))
-                # Compute histogram
+
+        if limits[0] is not None:
+            plt.axvline(limits[0],color="grey",linestyle="--",label="Min limit %.0f"%limits[0])
+        for sensor in my_data[my_file]:
+            # Check if variable exists
+            try: my_data[my_file][sensor][variable]
+            except KeyError:
+                print("ERROR: Variable %s not found in %s"%(variable,my_file))
+                print("Available variables are: %s"%my_data[my_file][sensor].keys())
+                raise KeyError
+            # Compute percentile
+            hist_data = np.sort(my_data[my_file][sensor][variable])
+            filtered_data = hist_data.copy()
+            if limits[0] is not None: filtered_data = hist_data[hist_data>=limits[0]]
+            if limits[1] is not None: filtered_data = filtered_data[filtered_data<=limits[1]]
+            if debug: print("%s: %i"%(variable,len(my_data[my_file][sensor][variable])))
+            selected_data = filtered_data[int(percentile[0]*len(filtered_data)):int(percentile[1]*len(filtered_data))]
+            if debug: print(f"{sensor}: {len(filtered_data)} entries ({100*len(filtered_data)/len(my_data[my_file][sensor][variable]):.2f}%) after applying limits.")
+            if debug: print(f"{sensor}: {len(selected_data)} entries ({100*len(selected_data)/len(my_data[my_file][sensor][variable]):.2f}%) after applying percentiles.")
+            # Compute histogram
+            if len(selected_data) > 0:
                 if variable == "AccumHits":
-                    h, bin_edges = np.histogram(selected_data,np.arange(0, np.max(selected_data)+bins, bins),density=density)
+                    h, bin_edges = np.histogram(hist_data,np.arange(0, np.max(hist_data), 1),density=density)
+                
                 else:
-                    h, bin_edges = np.histogram(selected_data,bins,density=density)
+                    h, bin_edges = np.histogram(hist_data,bins,density=density)
+                
                 if probability and not density:
                     h = h/np.sum(h)
 
                 mean = np.mean(selected_data)
                 std  = np.std(selected_data)
                 median = np.median(selected_data)
+                mode = bin_edges[np.argmax(h)]
+                higher_quartile = np.percentile(selected_data, 75)
+                lower_quartile  = np.percentile(selected_data, 25)
                 bin_centers = 0.5*(bin_edges[1:]+bin_edges[:-1])
-                plt.hist(bin_centers, bins=bin_edges, weights=h, histtype="step", color="C"+str(list(my_data[my_file].keys()).index(sensor)), label=sensor+" (%.0f +- %.0f)"%(mean, std), lw=1.5)    
+                plt.hist(bin_centers, bins=bin_edges, weights=h, histtype="step", color="C"+str(list(my_data[my_file].keys()).index(sensor)), label=sensor+" Mean (%.0f +- %.0f)"%(mean, std), lw=1.5)    
                 
                 if stats[0]:
-                    print("Mean %s: %.0f +- %.0f"%(sensor,mean,std))
-                    f.write("Mean %s: %.0f +- %.0f\n"%(sensor,mean,std))
+                    df = df.append(pd.DataFrame({"Sensor":[sensor],"LowerLimit":[limits[0]],"UpperLimit":[limits[1]],"PercentileLow":[percentile[0]],"PercentileHigh":[percentile[1]],"Entries":[len(selected_data)],"Mean":[mean],"Median":[median],"Mode":[mode],"StdDev":[std],"Q1":[lower_quartile],"Q3":[higher_quartile]}), ignore_index=True)
 
                 if stats[1]:
-                    plt.axvline(mean,color="green",label="Mean %.0f"%mean)
+                    plt.axvline(mean,color="green",label="Median %.0f"%median)
                     plt.axvline(mean+std,linestyle="--",color="green",label="Std %.0f"%std)
                     plt.axvline(mean-std,linestyle="--",color="green",label="Std %.0f"%std)
+            else:
+                print("WARNING: No data selected for sensor %s in file %s after applying limits and percentiles."%(sensor,my_file))
+                continue
         
+        # Save stats to file
+        if stats[0]: 
+            df.to_csv("../results/stats/"+my_file.split('.root')[0]+'_'+variable+"_stats.csv", index=False, float_format="%.2f")
+            if debug: print("Saving stats to ../results/stats/"+my_file.split('.root')[0]+'_'+variable+"_stats.csv")
+                
         # Plot settings
         plt.xlabel(variable)
         if density: plt.ylabel("Density")
