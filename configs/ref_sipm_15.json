@@ -1,0 +1,175 @@
+{
+  "comments": "Position units given in mm",
+  "display": true,
+  "G4_beam_settings": [
+    "/gps/particle opticalphoton",
+    "/gps/ene/type Mono",
+    "/gps/ene/mono 9.7 eV",
+    "/gps/pos/type Plane",
+    "/gps/pos/shape Circle",
+    "/gps/pos/centre 0 78.5 0 mm",
+    "/gps/pos/radius  11 mm",
+    "/gps/pos/rot1 0 0 90",
+    "/gps/pos/rot2 90 0 0",
+    "/gps/ang/type iso",
+    "/gps/number 1000",
+    "/run/beamOn 1",
+    "/run/initialize"
+  ],
+  "comment" :"/vis/scene/add/axes 0 0 0 5 cm",
+  "G4_vis_settings": [
+    "/vis/viewer/set/autorefresh/true",
+    "/vis/open OGL",
+    "/vis/drawVolume",
+    "/vis/scene/add/trajectories smooth",
+    "/vis/scene/add/eventID",
+    "/vis/scene/add/surfaces",
+    "/vis/enable",
+    "/vis/viewer/rebuild",
+    "/vis/viewer/set/background grey",
+    "/vis/scene/endOfEventAction accumulate 10"
+  ],
+  "sensors_keys": [
+    "RefSiPM",
+    "SiPM1",
+    "SiPM2"
+  ],
+  "source": {
+    "X": 0,
+    "Y": 0,
+    "Z": 0
+  },
+  "big_cajita": {
+    "shape": "Cylinder",
+    "material": "Plastic",
+    "finish": "ground",
+    "outter_dim": [
+      40.0,
+      40.0,
+      40.0
+    ],
+    "inner_dim": [
+      39.5,
+      39.5,
+      39.5
+    ],
+    "comment": "Rotation and position should be left as they are",
+    "rot": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "ref_sipm": {
+    "dim": [
+      3.0,
+      1e-6,
+      3.0
+    ],
+    "pos": [
+      0.0,
+     63.5,
+      0.0
+    ],
+    "comment": "Rotation should follow the same as big_cajita",
+    "rot": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "sipms": {
+    "dim": [
+      1e-6,
+      3.0,
+      3.0
+    ],
+    "pos1": [
+      38.5,
+      59.5,
+      0
+    ],
+    "pos2": [
+      -38.5,
+       59.5,
+      0
+    ],
+    "rot": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "tower_sipms": {
+    "comment1": "X & Z coordinates constrained to SiPM1",
+    "dim": [
+      1e-6,
+      0.0,
+      1e-6
+    ],
+    "buffer": [
+      5.3
+    ],
+    "comment2": "Position & rotation constrained by big_cajita"
+  },
+  "alpha_source": {
+    "dim": [
+      0,
+      12.5,
+      0.5
+    ],
+    "angle": [
+      0,
+      360
+    ],
+    "pos": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "rot": [
+      90.0,
+      90.0,
+      0.0
+    ]
+  },
+  "alpha_support": {
+    "dim": [
+      12.75,
+      14.5,
+      0.5
+    ],
+    "angle": [
+      0,
+      360
+    ],
+    "comment": "Y coordinate constrained to top of big_cajita",
+    "pos": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "rot": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "alpha_mask": {
+    "dim": [
+      2.83,
+      14.5,
+       1.0
+    ],
+    "angle": [
+      0,
+      360
+    ],
+    "comment": "Y coordinate substracted to top of big_cajita - support thickness",
+    "pos": [
+      0.0,
+      1.0,
+      0.0
+    ]
+  }
+}
