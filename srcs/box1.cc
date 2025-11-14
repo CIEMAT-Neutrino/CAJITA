@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     
     #ifdef G4MULTITHREADED
     std::cout<<"multithreading...."<<std::endl;
-    runManager->SetNumberOfThreads(1); // 1 for no multithreading (default) you can change to the number of threads you want
+    runManager->SetNumberOfThreads(20); // 1 for no multithreading (default) you can change to the number of threads you want
     #endif
 
     runManager->SetUserInitialization(new MyDetectorConstruction(second_arg)); // Use the geometry we define in construction.cc

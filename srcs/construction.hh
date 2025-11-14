@@ -41,7 +41,7 @@ private:
 
 
   // SENSITIVE DETECTORS NEED TO BE DEFINED HERE
-  G4LogicalVolume *logicSC, *logicSiPM1, *logicSiPM2;
+  G4LogicalVolume *logicRefSiPM, *logicSiPM1, *logicSiPM2;
     
   G4String fjsonName;
   void ConstructScintillator();
@@ -49,7 +49,4 @@ private:
   virtual void ConstructSDandField(); //construct sensitive detector and E/B field
 };
 
-
-
 #endif
-
