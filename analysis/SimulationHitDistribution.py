@@ -17,7 +17,7 @@ data = {
   "SiPM1": my_data[filename]["SiPM1"]["AccumHits"],
   "SiPM2": my_data[filename]["SiPM2"]["AccumHits"],
   # "COMBI": my_data[filename]["SiPM1"]["AccumHits"] + my_data[filename]["SiPM2"]["AccumHits"],
-  "XA": my_data[filename]["Arapuca"]["AccumHits"]
+  "RefSiPM": my_data[filename]["RefSiPM"]["AccumHits"]
 }
 
 fig = make_subplots(rows=2, cols=1, subplot_titles=("SiPM1 + SiPM2", "Arapuca"), shared_xaxes=False, shared_yaxes=True, vertical_spacing=0.1)
